@@ -3,7 +3,7 @@
   <title>小诺学习博客</title>
   
   
-  <link href="/atom.xml" rel="self"/>
+  <link href="./atom.xml" rel="self"/>
   
   <link href="/"/>
   <updated>2021-02-16T11:50:10.046Z</updated>
