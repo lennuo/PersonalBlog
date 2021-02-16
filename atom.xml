@@ -3,11 +3,11 @@
   <title>小诺学习博客</title>
   
   
-  <link href="./atom.xml" rel="self"/>
+  <link href="/PersonalBlog/atom.xml" rel="self"/>
   
-  <link href="/"/>
+  <link href="https://lennuo.github.io/"/>
   <updated>2021-02-16T11:50:10.046Z</updated>
-  <id>/</id>
+  <id>https://lennuo.github.io/</id>
   
   <author>
     <name>xiaonuolen</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="/2021/02/16/hello-world/"/>
-    <id>/2021/02/16/hello-world/</id>
+    <link href="https://lennuo.github.io/2021/02/16/hello-world/"/>
+    <id>https://lennuo.github.io/2021/02/16/hello-world/</id>
     <published>2021-02-16T11:50:10.046Z</published>
     <updated>2021-02-16T11:50:10.046Z</updated>
     
@@ -40,8 +40,8 @@
   
   <entry>
     <title>Hexo-Theme-Sakura</title>
-    <link href="/2018/12/12/Hexo-Theme-Sakura/"/>
-    <id>/2018/12/12/Hexo-Theme-Sakura/</id>
+    <link href="https://lennuo.github.io/2018/12/12/Hexo-Theme-Sakura/"/>
+    <id>https://lennuo.github.io/2018/12/12/Hexo-Theme-Sakura/</id>
     <published>2018-12-12T14:16:01.000Z</published>
     <updated>2021-02-16T14:14:28.334Z</updated>
     
@@ -51,12 +51,12 @@
     
     </summary>
     
-      <category term="开发" scheme="/categories/%E5%BC%80%E5%8F%91/"/>
+      <category term="开发" scheme="https://lennuo.github.io/categories/%E5%BC%80%E5%8F%91/"/>
     
     
-      <category term="web" scheme="/tags/web/"/>
+      <category term="web" scheme="https://lennuo.github.io/tags/web/"/>
     
-      <category term="悦读" scheme="/tags/%E6%82%A6%E8%AF%BB/"/>
+      <category term="悦读" scheme="https://lennuo.github.io/tags/%E6%82%A6%E8%AF%BB/"/>
     
   </entry>
   
