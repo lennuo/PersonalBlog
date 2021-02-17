@@ -6,7 +6,7 @@
   <link href="/PersonalBlog/atom.xml" rel="self"/>
   
   <link href="https://lennuo.github.io/PersonalBlog/"/>
-  <updated>2021-02-16T11:50:10.046Z</updated>
+  <updated>2021-02-17T13:01:51.997Z</updated>
   <id>https://lennuo.github.io/PersonalBlog/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hello World</title>
-    <link href="https://lennuo.github.io/PersonalBlog/2021/02/16/hello-world/"/>
-    <id>https://lennuo.github.io/PersonalBlog/2021/02/16/hello-world/</id>
-    <published>2021-02-16T11:50:10.046Z</published>
-    <updated>2021-02-16T11:50:10.046Z</updated>
+    <title>【派大星的独白】一个关于正常人的故事</title>
+    <link href="https://lennuo.github.io/PersonalBlog/2021/02/17/paidaxin/"/>
+    <id>https://lennuo.github.io/PersonalBlog/2021/02/17/paidaxin/</id>
+    <published>2021-02-17T13:47:59.000Z</published>
+    <updated>2021-02-17T13:01:51.997Z</updated>
     
     <summary type="html">
     
@@ -29,34 +29,42 @@
       
         
         
-          &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a
+          &lt;p&gt;来自bilibili视频引用&lt;/p&gt;
+&lt;p&gt;Up主：洛温阿特金森&lt;/p&gt;
+&lt;iframe src=&quot;//player.bilibili.com/player.html?aid=60731116&amp;bvid=BV1qt411j7fV&amp;cid=106015992&amp;page=1&quot;
         
       
     
     </summary>
+    
+      <category term="娱乐" scheme="https://lennuo.github.io/PersonalBlog/categories/%E5%A8%B1%E4%B9%90/"/>
     
     
   </entry>
   
   <entry>
-    <title>Hexo-Theme-Sakura</title>
-    <link href="https://lennuo.github.io/PersonalBlog/2018/12/12/Hexo-Theme-Sakura/"/>
-    <id>https://lennuo.github.io/PersonalBlog/2018/12/12/Hexo-Theme-Sakura/</id>
-    <published>2018-12-12T14:16:01.000Z</published>
-    <updated>2021-02-16T14:14:28.334Z</updated>
+    <title>【生僻字】（计算机版）计算机系人骄傲地把头抬起</title>
+    <link href="https://lennuo.github.io/PersonalBlog/2021/02/17/jisuanji/"/>
+    <id>https://lennuo.github.io/PersonalBlog/2021/02/17/jisuanji/</id>
+    <published>2021-02-17T13:47:59.000Z</published>
+    <updated>2021-02-17T13:03:59.822Z</updated>
     
     <summary type="html">
     
-      hexo-sakura主题使用教程
+      
+      
+        
+        
+          &lt;p&gt;来自bilibili视频引用&lt;/p&gt;
+&lt;p&gt;Up主：洛温阿特金森&lt;/p&gt;
+&lt;iframe src=&quot;//player.bilibili.com/player.html?aid=42043672&amp;bvid=BV19b411C7rJ&amp;cid=73813748&amp;page=1&quot;
+        
+      
     
     </summary>
     
-      <category term="开发" scheme="https://lennuo.github.io/PersonalBlog/categories/%E5%BC%80%E5%8F%91/"/>
+      <category term="娱乐" scheme="https://lennuo.github.io/PersonalBlog/categories/%E5%A8%B1%E4%B9%90/"/>
     
-    
-      <category term="web" scheme="https://lennuo.github.io/PersonalBlog/tags/web/"/>
-    
-      <category term="悦读" scheme="https://lennuo.github.io/PersonalBlog/tags/%E6%82%A6%E8%AF%BB/"/>
     
   </entry>
   
