@@ -26,7 +26,7 @@ function bot_ui_ini() {
     }).then(function () {
         botui.message.add({
             delay: 1100,
-            content: "这里是 Mashiro"
+            content: "这里是 xiaonuo"
         }).then(function () {
             botui.message.add({
                 delay: 1100,
@@ -38,7 +38,7 @@ function bot_ui_ini() {
                         text: "然后呢？ 😃",
                         value: "sure"
                     }, {
-                        text: "少废话！ 🙄",
+                        text: "少废话！ 😠",
                         value: "skip"
                     }]
                 }).then(function (a) {
@@ -51,7 +51,7 @@ function bot_ui_ini() {
     var sure = function () {
             botui.message.add({
                 delay: 600,
-                content: "😘"
+                content: "😀"
             }).then(function () {
                 secondpart()
             })
@@ -64,91 +64,51 @@ function bot_ui_ini() {
         },
         secondpart = function () {
             botui.message.add({
-                delay: 1500,
-                content: "目前就读于上海财经大学"
-            }).then(function () {
+                delay: 1500,
+                content: "毕业于浙江经贸职业技术学院"
+            }).then(function () {
                 botui.message.add({
-                    delay: 1500,
-                    content: "向往技术却误入商科，但后来喜欢上了经济学…"
-                }).then(function () {
-                    botui.message.add({
-                        delay: 1200,
-                        content: "因为数据分析也需要Coder嘛"
-                    }).then(function () {
-                        botui.message.add({
-                            delay: 1500,
-                            content: "主攻 R 语言和 Python，略懂 STATA，偶尔也折腾 HTML/CSS/JavaScript/PHP"
-                        }).then(function () {
-                            botui.message.add({
-                                delay: 1500,
-                                content: "研究的方向，是经济/金融方向的数据分析（data science）以及机器学习（machine learning）"
-                            }).then(function () {
-                                botui.message.add({
-                                    delay: 1800,
-                                    content: "喜欢画画，希望有一天能够被称为画师"
-                                }).then(function () {
-                                    botui.action.button({
-                                        delay: 1100,
-                                        action: [{
-                                            text: "为什么叫Mashiro呢？ 🤔",
-                                            value: "why-mashiro"
-                                        }]
-                                    }).then(function (a) {
-                                        thirdpart()
-                                    })
-                                })
-                            })
-                        })
-                    })
-                })
-            })
-        },
-        thirdpart = function () {
-            botui.message.add({
-                delay: 1E3,
-                content: "Mashiro以及站名都来自一部动画，因为和主角有一样的爱好~ 如果有兴趣可以找找首页上的视频~"
-            }).then(function () {
-                botui.action.button({
-                    delay: 1500,
-                    action: [{
-                        text: "为什么是白猫呢？ 🤔",
-                        value: "why-cat"
-                    }]
-                }).then(function (a) {
-                    fourthpart()
-                })
-            })
-        },
-        fourthpart = function () {
-            botui.message.add({
-                delay: 1E3,
-                content: "因为对GitHub有种执念… "
-            }).then(function () {
-                botui.message.add({
-                    delay: 1100,
-                    content: "而且我真的是猫控！"
-                }).then(function () {
+                    delay: 1500,
+                    content: "目前专升本后就读于台州学院"
+                }).then(function (){
                     botui.action.button({
-                        delay: 1500,
+                        delay: 1100,
                         action: [{
-                            text: "域名有什么含意吗？(ง •_•)ง",
-                            value: "why-domain"
+                            text: "为什么选择这个学校? 😳",
+                            value: "why-choose"
                         }]
-                    }).then(function (a) {
-                        fifthpart()
+                    }).then(function(){
+                        schoolpart()
                     })
                 })
             })
-        },
-        fifthpart = function () {
+        
+        }
+    
+        schoolpart = function(){
             botui.message.add({
-                delay: 1E3,
-                content: "emmmm，看备案信息你就知道了=.= 本来想要zheng.xin的，但50万真买不起。。"
-            }).then(function () {
-                botui.message.add({
-                    delay: 1600,
-                    content: "那么，仔细看看我的博客吧？ ^_^"
+                delay: 1500,
+                content: "因为离家里近,在没有工作前多陪陪家里人"
+            }).then(function () {
+                botui.action.button({
+                    delay: 1100,
+                    action: [{
+                        text: "对未来你有什么打算吗? 😳",
+                    }]
+                }).then(function(){
+                    futurepart()
                 })
             })
-        } 
+        }
+        futurepart = function(){
+            botui.message.add({
+                delay: 1500,
+                content: "会一直走开发或测试的路,这两个都我都很喜欢.对MQ比较感兴趣会深入研究."
+            }).then(function (){
+                botui.message.add({
+                    delay: 1500,
+                    content: "那么，仔细看看我的博客吧，欢迎来到我的世界！"
+                })
+            })
+        }
 }
