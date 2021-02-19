@@ -327,16 +327,16 @@
 <p><strong>这就说到了事务的第一个特性：原子性,保证共同成功或共同失败,不会出现一个成功,一个失败的情况。</strong></p>
 <h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><p>张三 来到了银行门口刚准备闹,经理把他拦了下来说：“这次我们已经把写这个BUG程序员祭天了,钱给您退回来了。”张三又开始了转账操作,给李四又转账了 <strong>1000</strong> 块钱,这次成功转过去了,张三打电话告知李四没想到被李四一顿臭骂:“你小子**是不是玩我,给我转个 <strong>250</strong> 是在骂我！！”。 </p>
 <p><strong>这就是事务的第二个特性：一致性,确保状态一致的。转账服务中转出账户的扣除金额与转入账户的转入金额必须保持一致。</strong></p>
-<h2 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h2><p>张三 又找到了银行经理, 气急败坏地刚准备开始讲优美的中国话, 只见天气突变, 一个没有什么头发的男子朝天飞去,经理说：“写出这个BUG的程序员也被祭天了,这次肯定也没有问题”。张三在操作的同时王五给他转了500块钱,但账户钱没有少反而多了张三窃喜想开溜,经理急忙过来说:“啊啊啊,不好意思,我们又出问题了,钱你是拿不走的。”</p>
-<p><strong>这就是事务的第三个特性：隔离性,针对并发事务而言，事务必须在不干扰其他进程或事务的前提下独立执行，这个例子中出现了脏读王五转进来的时候读到了转账时未提交的数据</strong></p>
+<h2 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h2><p>张三 又找到了银行经理, 气急败坏地刚准备开始讲优美的中国话, 只见天气突变, 一个没有什么头发的男子朝天飞去,经理说：“写出这个BUG的程序员也被祭天了,这次肯定也没有问题”。张三在操作的同时王五给他转了500块钱,读到的是扣了1000块钱的账户余额,但是转给李四的时候账号写错了,导致没有转过去,把账户余额原样,但王五转账操作还是从扣1000块钱的基础上加了500,张三发现自己转账钱没有收到,还平白无故少了500块钱,,经理急忙过来说:“啊啊啊,不好意思,我们又出问题了,这就拿程序员祭天。”</p>
+<p><strong>这就是事务的第三个特性：隔离性,针对并发事务而言，事务必须在不干扰其他进程或事务的前提下独立执行，这个例子中出现了脏读王五转进来成功了,但是</strong></p>
 <h2 id="持久性"><a href="#持久性" class="headerlink" title="持久性"></a>持久性</h2><p>又又又一次操作后,张三终于把钱正常的转给了李四,查询了记录这次肯定没有错。</p>
 <p><strong>这就是事务的第四个特性：持久性,对数据所作的所有改动都必须在事务成功结束前保存至某种物理存储设备。这样可以保证，所作的修改在任何系统瘫痪时不至于丢失。<br></strong></p>
 <h1 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h1><h2 id="共享锁-S"><a href="#共享锁-S" class="headerlink" title="共享锁(S)"></a>共享锁(S)</h2><p>读锁：事务A对数据对象加S锁的时候，A和其他的事务能加S锁，但都只能读，也不能加X锁</p>
 <h2 id="排他锁-X"><a href="#排他锁-X" class="headerlink" title="排他锁(X)"></a>排他锁(X)</h2><p>读写锁：事务A加了对象X锁后，其他事务不能加任何锁，直到A释放</p>
 <h1 id="事务错误情况"><a href="#事务错误情况" class="headerlink" title="事务错误情况"></a>事务错误情况</h1><ol>
-<li>脏读：事务A读到了事务B未提交的数据。</li>
+<li>脏读：事务A读到了事务B未提交的数据。例如：事务B执行过程中修改了数据X，在未提交前，事务A读取了X，而事务B却回滚了，这样事务A就形成了脏读。</li>
 <li>不可重复读：事务A第一次查询得到一行记录row1，事务B提交修改后，事务A第二次查询得到row1，但列内容发生了变化。</li>
-<li>幻读：事务A第一次查询得到一行记录row1，事务B提交修改后，事务A第二次查询得到两行记录row1和row2。</li>
+<li>幻读：事务A首先根据条件索引得到N条数据，然后事务B改变了这N条数据之外的M条或者增添了M条符合事务A搜索条件的数据，导致事务A再次搜索发现有N+M条数据了，就产生了幻读。</li>
 </ol>
 <h1 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h1><p><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/shiwu.png" alt="shiwu.png"></p>
 <h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>愿世界和平、永无bug<br><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/fozu.png" alt="fozu.png"></p>
@@ -380,15 +380,15 @@
           
             <div class="post-nepre half next">
           
-            <a href="/PersonalBlog/2021/02/17/yule/paidaxin/" rel="next">
+            <a href="/PersonalBlog/2021/02/17/yule/jisuanji/" rel="next">
               <div class="background">
-                <img class="lazyload" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/paidaxing.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/paidaxing.jpg">
+                <img class="lazyload" src="/img/background.jpg" data-src="http://i1.hdslb.com/bfs/archive/09fad0504d3be186bc9f9d68db031d5760f2e7a1.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="http://i1.hdslb.com/bfs/archive/09fad0504d3be186bc9f9d68db031d5760f2e7a1.jpg">
               </div>
               <span class="label">
               Next Post</span>
               <div class="info">
                 <h3>
-                【派大星的独白】一个关于正常人的故事</h3>
+                【生僻字】（计算机版）计算机系人骄傲地把头抬起</h3>
                 <hr>
               </div>
             </a>
