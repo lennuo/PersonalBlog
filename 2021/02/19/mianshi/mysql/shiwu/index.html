@@ -335,8 +335,8 @@
 <h2 id="排他锁-X"><a href="#排他锁-X" class="headerlink" title="排他锁(X)"></a>排他锁(X)</h2><p>读写锁：事务A加了对象X锁后，其他事务不能加任何锁，直到A释放</p>
 <h1 id="事务错误情况"><a href="#事务错误情况" class="headerlink" title="事务错误情况"></a>事务错误情况</h1><ol>
 <li>脏读：事务A读到了事务B未提交的数据。例如：事务B执行过程中修改了数据X，在未提交前，事务A读取了X，而事务B却回滚了，这样事务A就形成了脏读。</li>
-<li>不可重复读：事务A第一次查询得到一行记录row1，事务B提交修改后，事务A第二次查询得到row1，但列内容发生了变化。</li>
-<li>幻读：事务A首先根据条件索引得到N条数据，然后事务B改变了这N条数据之外的M条或者增添了M条符合事务A搜索条件的数据，导致事务A再次搜索发现有N+M条数据了，就产生了幻读。</li>
+<li>不可重复读：事务A第一次查询得到一行记录row1，事务B提交修改后，事务A第二次查询得到row1，但列内容发生了变化(数据修改)。</li>
+<li>幻读：事务A首先根据条件索引得到N条数据，然后事务B改变了这N条数据之外的M条或者增添了M条符合事务A搜索条件的数据，导致事务A再次搜索发现有N+M条数据了，就产生了幻读(数据增加)。</li>
 </ol>
 <h1 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h1><p><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/shiwu.png" alt="shiwu.png"></p>
 <h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>愿世界和平、永无bug<br><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/fozu.png" alt="fozu.png"></p>
