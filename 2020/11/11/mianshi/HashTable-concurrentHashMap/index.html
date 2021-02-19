@@ -370,6 +370,11 @@ public synchronized boolean containsKey(Object key) {
 <li>如果都不满足，则利用 synchronized 锁写入数据。</li>
 <li>如果数量大于 TREEIFY_THRESHOLD 则要转换为红黑树。</li>
 </ol>
+<h3 id="GET-1"><a href="#GET-1" class="headerlink" title="GET"></a>GET</h3><ul>
+<li>先根据key的hash定位,如果在桶上直接返回</li>
+<li>如果是红黑树那就按红黑树遍历</li>
+<li>不满足就按链表方式遍历</li>
+</ul>
 
         </div>
         <!-- .entry-content -->
