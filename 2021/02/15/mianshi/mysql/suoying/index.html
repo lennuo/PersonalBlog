@@ -331,15 +331,15 @@
 <p><strong>这就是事务的第三个特性：隔离性,针对并发事务而言，事务必须在不干扰其他进程或事务的前提下独立执行。</strong></p>
 <h2 id="持久性"><a href="#持久性" class="headerlink" title="持久性"></a>持久性</h2><p>又又又一次操作后,张三终于把钱正常的转给了李四,查询了记录这次肯定没有错。</p>
 <p><strong>这就是事务的第四个特性：持久性,对数据所作的所有改动都必须在事务成功结束前保存至某种物理存储设备。这样可以保证，所作的修改在任何系统瘫痪时不至于丢失。<br></strong></p>
-<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="共享锁-S"><a href="#共享锁-S" class="headerlink" title="共享锁(S)"></a>共享锁(S)</h3><p>读锁：事务A对数据对象加S锁的时候，A和其他的事务能加S锁，但都只能读，也不能加X锁</p>
-<h3 id="排他锁-X"><a href="#排他锁-X" class="headerlink" title="排他锁(X)"></a>排他锁(X)</h3><p>读写锁：事务A加了对象X锁后，其他事务不能加任何锁，直到A释放</p>
-<h2 id="事务错误情况"><a href="#事务错误情况" class="headerlink" title="事务错误情况"></a>事务错误情况</h2><ol>
+<h1 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h1><h2 id="共享锁-S"><a href="#共享锁-S" class="headerlink" title="共享锁(S)"></a>共享锁(S)</h2><p>读锁：事务A对数据对象加S锁的时候，A和其他的事务能加S锁，但都只能读，也不能加X锁</p>
+<h2 id="排他锁-X"><a href="#排他锁-X" class="headerlink" title="排他锁(X)"></a>排他锁(X)</h2><p>读写锁：事务A加了对象X锁后，其他事务不能加任何锁，直到A释放</p>
+<h1 id="事务错误情况"><a href="#事务错误情况" class="headerlink" title="事务错误情况"></a>事务错误情况</h1><ol>
 <li>脏读：事务A读到了事务B未提交的数据。</li>
 <li>不可重复读：事务A第一次查询得到一行记录row1，事务B提交修改后，事务A第二次查询得到row1，但列内容发生了变化。</li>
 <li>幻读：事务A第一次查询得到一行记录row1，事务B提交修改后，事务A第二次查询得到两行记录row1和row2。</li>
 </ol>
-<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2><p><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/shiwu.png" alt="shiwu.png"></p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>愿世界和平、永无bug<br><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/fozu.png" alt="fozu.png"></p>
+<h1 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h1><p><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/shiwu.png" alt="shiwu.png"></p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>愿世界和平、永无bug<br><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/fozu.png" alt="fozu.png"></p>
 
         </div>
         <!-- .entry-content -->
@@ -362,15 +362,15 @@
           
             <div class="post-nepre half previous">
           
-            <a href="/PersonalBlog/2021/02/17/yule/paidaxin/" rel="prev">
+            <a href="/PersonalBlog/2021/02/17/yule/jisuanji/" rel="prev">
               <div class="background">
-                <img class="lazyload" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/paidaxing.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/paidaxing.jpg">
+                <img class="lazyload" src="/img/background.jpg" data-src="http://i1.hdslb.com/bfs/archive/09fad0504d3be186bc9f9d68db031d5760f2e7a1.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="http://i1.hdslb.com/bfs/archive/09fad0504d3be186bc9f9d68db031d5760f2e7a1.jpg">
               </div>
               <span class="label">
               Previous Post</span>
               <div class="info">
                 <h3>
-                【派大星的独白】一个关于正常人的故事</h3>
+                【生僻字】（计算机版）计算机系人骄傲地把头抬起</h3>
                 <hr>
               </div>
             </a>
