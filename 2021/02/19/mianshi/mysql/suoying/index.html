@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">【集合】HashTable-ConcurrentHashMap | 小诺学习博客</title>
+  <title itemprop="name">【MYSQL】索引基础篇 | 小诺学习博客</title>
   
     <link rel="shortcut icon" href="/img/favicon.ico">
   
@@ -292,11 +292,11 @@
 
   <div class="pattern-center single-center">
     <!-- 有配图默认渲染第一张 -->
-    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg);" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg">
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg);" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg">
     </div>
     <header class="pattern-header single-header">
       <h1 class="entry-title">
-      【集合】HashTable-ConcurrentHashMap</h1>
+      【MYSQL】索引基础篇</h1>
       <p class="entry-census">
         <span>
           <a href="">
@@ -308,7 +308,7 @@
         </span>
         <span class="bull">
         ·</span>
-        2020-7-11<span class="bull">
+        2021-2-19<span class="bull">
         ·</span>
       <span id="busuanzi_value_page_pv"></span>次阅读</p>
     </header>
@@ -322,59 +322,60 @@
         <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
         
         <div class="entry-content">
-          <h1 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h1><h2 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h2><p>书接上回,说到了<a href="https://lennuo.github.io/PersonalBlog/2020/11/10/mianshi/hashmap/">HashMap</a>是不安全的,说到了HashTable是安全的,直接放源码</p>
-<pre><code>public synchronized V get(Object key) {
-    Entry&lt;?,?&gt; tab[] = table;
-    int hash = key.hashCode();
-    int index = (hash &amp; 0x7FFFFFFF) % tab.length;
-    for (Entry&lt;?,?&gt; e = tab[index] ; e != null ; e = e.next) {
-        if ((e.hash == hash) &amp;&amp; e.key.equals(key)) {
-            return (V)e.value;
-        }
-    }
-    return null;
-}
-
-public synchronized boolean containsKey(Object key) {
-    Entry&lt;?,?&gt; tab[] = table;
-    int hash = key.hashCode();
-    int index = (hash &amp; 0x7FFFFFFF) % tab.length;
-    for (Entry&lt;?,?&gt; e = tab[index] ; e != null ; e = e.next) {
-        if ((e.hash == hash) &amp;&amp; e.key.equals(key)) {
-            return true;
-        }
-    }
-    return false;
-}
-</code></pre><p>看全部都是加了锁的,所以就是线程安全的了。</p>
-<h2 id="与HashMap的不同"><a href="#与HashMap的不同" class="headerlink" title="与HashMap的不同"></a>与HashMap的不同</h2><ol>
-<li>HashMap的key可以为null,HashTable是不允许的<br>因为HashTable有个<strong>安全失败机制</strong>这种机制会导致你读的数据都不一定是最新的,因此当key为null的时候,不确定他是真的包含还是真的没有</li>
-<li>初始容量不同<br>HashTable默认是11,HashMap是16</li>
-<li>扩容不同<br>HashMap是2倍,HashTable是2倍+1</li>
-<li>迭代器不同<br>HashMap迭代器是fail-fast(快速失败),HashTable不是,所以HashTable在迭代的时候可以修改增删数据</li>
+          <p>张三接收了一个老项目,查数据的时候经常会被吐槽查询速度慢,数据出不来。终于它炸了,出不来数据了(又该祭天程序员了),经过检查发现数据多的已经查询数据库要几分钟了,这个时候 <strong>索引</strong> 站了出来</p>
+<h1 id="概念-1"><a href="#概念-1" class="headerlink" title="概念[1]"></a>概念[1]</h1><p>我们知道数据库的数据最终它都会存储在文件中。那么我们查找id为1的数据时，我们会这么写：SELECT <em> FROM person WHERE ID = 1.<br>如果没有索引，我们怎么查询呢，我想我们只能读取文件，逐行扫描，找到符合的结果。如果 我们再来查询：<br>SELECT </em> FROM person WHERE ID = 3,那么有需要读取文件，逐行扫描，这样子效率会特别差。这时候就需要有一种东西可以帮助我们实现高效的获取数据。索引就这么出现了。在讨论索引之前，还要讨论一下底层文件系统是怎么样进行读取，写入数据的。<br><img src="https://img-blog.csdn.net/20180405132238853" alt="suoyin1.png"></p>
+<p>如图一，在文件系统中，table表是这么存储的，有一个文件名，文件名对应着一个三元组（柱面，磁道，扇区），当我们要去读机械硬盘时，我们需要通过我们的柱面，磁道定位到扇区，然后找到table.idb存储在图右磁盘的红色区域内，读取数据时（假设顺时钟），将会从A依次读到B,这就是原始存储和读取方式。所以当我们每次查找的时候都是需要如图2 中从A到B的扫描读取，效率很低。<br><img src="https://img-blog.csdn.net/20180405133547473" alt="suoyin2.png"></p>
+<h1 id="索引数据结构"><a href="#索引数据结构" class="headerlink" title="索引数据结构"></a>索引数据结构</h1><p>索引默认用的数据结构是B+树,作为对比先聊聊Hash和B树。</p>
+<h2 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h2><ol>
+<li>Hash我们知道是可以算出来Hash算法算出一个特定的下标,来存储数据。但是他适用于特定的查找,比如查找条件 age = 15,但如果查找条件 age &gt;= 14,那么他只能通过全表扫描,筛选出符合条件的数据。</li>
+<li>数据量大的时候Hash的碰撞会比较严重。</li>
+<li>无法进行索引排序</li>
+<li>不支持多列联合索引的最左匹配规则 </li>
 </ol>
-<h2 id="快速失败"><a href="#快速失败" class="headerlink" title="快速失败"></a>快速失败</h2><p>快速失败是java里面所有的集合都有的一个,当对一个集合进行迭代遍历的时候,如果进行增删改操作就会抛出异常,其中有一个变量modCount用来记录修改次数,还有一个变量expectedModCount则是表示迭代器对集合进行修改的次数。在进行next()/hasNext()的时候会检查两个值是否一样,不一样则会抛出异常。</p>
-<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>HashTable的优点是能够保证线程的安全性,同时这也是他的一个缺点,他一锁就会把整个对锁住,导致效率极低,因此出现了concurrentHashMap。</p>
-<hr>
-<h1 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h1><h2 id="JDK1-7"><a href="#JDK1-7" class="headerlink" title="JDK1.7"></a>JDK1.7</h2><h3 id="底层结构"><a href="#底层结构" class="headerlink" title="底层结构"></a>底层结构</h3><p>Segment+HashEntry(数组+链表)<br><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9whwt59o9j30c60dw3z0.jpg" alt="jdk1.7.png"></p>
-<p>ConcurrentHashMap 采用了分段锁技术，其中 Segment 继承于 ReentrantLock, 所以要锁的时候就只会单独锁一个Segment,不会影响其他的Segment。</p>
-<h3 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a>PUT</h3><p>首先尝试获得锁,如果失败就是有其他线程,那么就自旋尝试获得锁,到一定次数就改为阻塞锁获取<br>先通过 key 定位到 HashEntry,遍历该 HashEntry, 如果不为空则遍历 key 和当前 key 比较是否相等, 相等就覆盖掉旧的 value<br>为空的话就会新建一个 HashEntry 并加入到 Segment 中,同时判断是否需要扩容</p>
-<h3 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h3><p>get不需要修改数据,所以比较高效,第一次Hash到Segment,第二次Hash到具体的元素上。</p>
-<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><p>查询的时候，还得遍历链表，会导致效率很低，这个跟jdk1.7的HashMap是存在的一样问题，所以他在jdk1.8完全优化了。</p>
-<h2 id="JDK1-8"><a href="#JDK1-8" class="headerlink" title="JDK1.8"></a>JDK1.8</h2><h3 id="底层结构-1"><a href="#底层结构-1" class="headerlink" title="底层结构"></a>底层结构</h3><p>Node+CAS+Synchronized</p>
-<h3 id="PUT-1"><a href="#PUT-1" class="headerlink" title="PUT"></a>PUT</h3><ol>
-<li>根据 key 计算出 hashcode。</li>
-<li>判断是否需要进行初始化。</li>
-<li>即为当前 key 定位出的 Node，如果为空表示当前位置可以写入数据，利用 <a href="#">CAS</a> 尝试写入，失败则自旋保证成功。</li>
-<li>如果当前位置的 hashcode == MOVED == -1,则需要进行扩容。</li>
-<li>如果都不满足，则利用 synchronized 锁写入数据。</li>
-<li>如果数量大于 TREEIFY_THRESHOLD 则要转换为红黑树。</li>
+<h2 id="B树-1"><a href="#B树-1" class="headerlink" title="B树[1]"></a>B树[1]</h2><p>首先先简单介绍下什么叫做B树(多路搜索树),一听名字为了搜索数据而生的,它不一定是二叉的哦。</p>
+<ol>
+<li>定义非叶子节点的个数最多为M,且M&gt;2</li>
+<li>根节点的儿子数为[2,M]</li>
+<li>除根节点以外的非叶子节点的儿子数量[M/2,M]</li>
+<li>每一个结点至少存放 M/2-1(向上取整)和最多M-1个关键字</li>
+<li>非叶子节点的关键字个数 = 儿子个数 - 1</li>
+<li>非叶子节点关键字:K[1],K[2]….K[M-1],且K[n] &lt; K[n+1]</li>
+<li>非叶子节点的指针:P[1],P[2]….P[M],且P[1]指向的关键字小于K[1]</li>
+<li>所有叶子节点位于同一层</li>
 </ol>
-<h3 id="GET-1"><a href="#GET-1" class="headerlink" title="GET"></a>GET</h3><ul>
-<li>先根据key的hash定位,如果在桶上直接返回</li>
-<li>如果是红黑树那就按红黑树遍历</li>
-<li>不满足就按链表方式遍历</li>
-</ul>
+<p><img src="https://p-blog.csdn.net/images/p_blog_csdn_net/manesking/4.JPG" alt="Bshu.jpg"></p>
+<h2 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h2><p>B+树是B树的一个扩展,提高IO性能,解决元素遍历效率低下</p>
+<h3 id="与B树的不同"><a href="#与B树的不同" class="headerlink" title="与B树的不同"></a>与B树的不同</h3><ol>
+<li>有M棵子树的非叶子结点中含有M个关键字（b树是M-1个），这些关键字不保存数据，只用来索引，所有数据都保存在叶子节点（B树是每个关键字都保存数据）。</li>
+<li>所有的叶子结点中包含了全部关键字的信息，及指向含这些关键字记录的指针，且叶子结点本身依关键字的大小自小而大顺序链接。</li>
+<li>所有的非叶子结点可以看成是索引部分，结点中仅含其子树中的最大（或最小）关键字。</li>
+</ol>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><ol>
+<li>B+树的中间节点不保存数据，所以磁盘页能容纳更多节点元素，更“矮胖”；</li>
+<li>B+树查询必须查找到叶子节点，B树只要匹配到即可不用管元素位置，因此B+树查找更稳定（并不慢）；</li>
+<li>对于范围查找来说，B+树只需遍历叶子节点链表即可，b树却需要重复地中序遍历<br><img src="https://p-blog.csdn.net/images/p_blog_csdn_net/manesking/5.JPG" alt="B+shu.jpg"></li>
+</ol>
+<h1 id="索引面试题-2"><a href="#索引面试题-2" class="headerlink" title="索引面试题[2]"></a>索引面试题[2]</h1><h2 id="索引概念、索引模型"><a href="#索引概念、索引模型" class="headerlink" title="索引概念、索引模型"></a>索引概念、索引模型</h2><p>我们是怎么聊到索引的呢，是因为我提到我们的业务量比较大，每天大概有几百万的新数据生成，于是有了以下对话：<br>Q：你们每天这么大的数据量，都是保存在关系型数据库中吗？<br>A：是的，我们线上使用的是MySQL数据库<br>Q：每天几百万数据，一个月就是几千万了，那你们有没有对于查询做一些优化呢？<br>A：我们在数据库中创建了一些索引（我现在非常后悔我当时说了这句话）</p>
+<p>这里可以看到，阿里的面试官并不会像有一些公司一样拿着题库一道一道的问，而是会根据面试者做过的事情以及面试过程中的一些内容进行展开。</p>
+<p>Q：那你能说说什么是索引吗？<br>A：（这道题肯定难不住我啊）索引其实是一种数据结构，能够帮助我们快速的检索数据库中的数据<br>Q：那么索引具体采用的哪种数据结构呢？<br>A：（这道题我也背过）常见的MySQL主要有两种结构：Hash索引和B+ Tree索引，我们使用的是InnoDB引擎，默认的是B+树</p>
+<p>这里我耍了一个小心机，特意说了一下索引和存储引擎有关。希望面试官可以问我一些关于存储引擎的问题。然而面试官并没有被我带跑…</p>
+<p>Q：既然你提到InnoDB使用的B+ 树的索引模型，那么你知道为什么采用B+ 树吗？这和Hash索引比较起来有什么优缺点吗？<br>A：（突然觉得这道题有点难，但是我还是凭借着自己的知识储备简单的回答上一些）因为Hash索引底层是哈希表，哈希表是一种以key-value存储数据的结构，所以多个数据在存储关系上是完全没有任何顺序关系的，所以，对于区间查询是无法直接通过索引查询的，就需要全表扫描。所以，哈希索引只适用于等值查询的场景。而B+ 树是一种多路平衡查询树，所以他的节点是天然有序的（左子节点小于父节点、父节点小于右子节点），所以对于范围查询的时候不需要做全表扫描<br>Q：除了上面这个范围查询的，你还能说出其他的一些区别吗？<br>A：（这个题我回答的不好，事后百度了一下）<br>B+ Tree索引和Hash索引区别？</p>
+<ol>
+<li>哈希索引适合等值查询，但是无法进行范围查询 </li>
+<li>哈希索引没办法利用索引完成排序 </li>
+<li>哈希索引不支持多列联合索引的最左匹配规则 </li>
+<li>如果有大量重复键值的情况下，哈希索引的效率会很低，因为存在哈希碰撞问题</li>
+</ol>
+<h2 id="聚簇索引、覆盖索引"><a href="#聚簇索引、覆盖索引" class="headerlink" title="聚簇索引、覆盖索引"></a>聚簇索引、覆盖索引</h2><p>Q：刚刚我们聊到B+ Tree ，那你知道B+ Tree的叶子节点都可以存哪些东西吗？<br>A：InnoDB的B+ Tree可能存储的是整行数据，也有可能是主键的值<br>Q：那这两者有什么区别吗？<br>A：（当他问我叶子节点的时候，其实我就猜到他可能要问我聚簇索引和非聚簇索引了）在 InnoDB 里，索引B+ Tree的叶子节点存储了整行数据的是主键索引，也被称之为聚簇索引。而索引B+ Tree的叶子节点存储了主键的值的是非主键索引，也被称之为非聚簇索引<br>Q：那么，聚簇索引和非聚簇索引，在查询数据的时候有区别吗？<br>A：聚簇索引查询会更快？<br>Q：为什么呢？<br>A：因为主键索引树的叶子节点直接就是我们要查询的整行数据了。而非主键索引的叶子节点是主键的值，查到主键的值以后，还需要再通过主键的值再进行一次查询<br>Q：刚刚你提到主键索引查询只会查一次，而非主键索引需要回表查询多次。（后来我才知道，原来这个过程叫做回表）是所有情况都是这样的吗？非主键索引一定会查询多次吗？<br>A：（额、这个问题我回答的不好，后来我自己查资料才知道，通过覆盖索引也可以只查询</p>
+<p>覆盖索引？<br>覆盖索引（covering index）指一个查询语句的执行只用从索引中就能够取得，不必从数据表中读取。也可以称之为实现了索引覆盖。<br>当一条查询语句符合覆盖索引条件时，MySQL只需要通过索引就可以返回查询所需要的数据，这样避免了查到索引后再返回表操作，减少I/O提高效率。<br>如，表covering_index_sample中有一个普通索引 idx_key1_key2(key1,key2)。<br>当我们通过SQL语句：select key2 from covering_index_sample where key1 = ‘keytest’;的时候，就可以通过覆盖索引查询，无需回表。</p>
+<h2 id="联合索引、最左前缀匹配"><a href="#联合索引、最左前缀匹配" class="headerlink" title="联合索引、最左前缀匹配"></a>联合索引、最左前缀匹配</h2><p>Q：不知道的话没关系，想问一下，你们在创建索引的时候都会考虑哪些因素呢？<br>A：我们一般对于查询概率比较高，经常作为where条件的字段设置索引<br>Q： 那你们有用过联合索引吗？<br>A：用过呀，我们有对一些表中创建过联合索引<br>Q：那你们在创建联合索引的时候，需要做联合索引多个字段之间顺序你们是如何选择的呢？<br>A：我们把识别度最高的字段放到最前面<br>Q：为什么这么做呢？<br>A：（这个问题有点把我问蒙了，稍微有些慌乱）这样的话可能命中率会高一点吧。。。<br>Q： 那你知道最左前缀匹配吗？<br>A：（我突然想起来原来面试官是想问这个，怪自己刚刚为什么就没想到这个呢。）哦哦哦。您刚刚问的是这个意思啊，在创建多列索引时，我们根据业务需求，where子句中使用最频繁的一列放在最左边，因为MySQL索引查询会遵循最左前缀匹配的原则，即最左优先，在检索数据时从联合索引的最左边开始匹配。所以当我们创建一个联合索引的时候，如(key1,key2,key3)，相当于创建了（key1）、(key1,key2)和(key1,key2,key3)三个索引，这就是最左匹配原则</p>
+<h2 id="索引下推、查询优化"><a href="#索引下推、查询优化" class="headerlink" title="索引下推、查询优化"></a>索引下推、查询优化</h2><p>Q：你们线上用的MySQL是哪个版本啊呢？<br>A：我们MySQL是5.7<br>Q：那你知道在MySQL 5.6中，对索引做了哪些优化吗？<br>A：不好意思，这个我没有去了解过。（事后我查了一下，有一个比较重要的 ：Index Condition Pushdown Optimization）</p>
+<h2 id="查询优化器？"><a href="#查询优化器？" class="headerlink" title="查询优化器？"></a>查询优化器？</h2><p>一条SQL语句的查询，可以有不同的执行方案，至于最终选择哪种方案，需要通过优化器进行选择，选择执行成本最低的方案。<br>在一条单表查询语句真正执行之前，MySQL的查询优化器会找出执行该语句所有可能使用的方案，对比之后找出成本最低的方案。<br>这个成本最低的方案就是所谓的执行计划。优化过程大致如下：<br>1、根据搜索条件，找出所有可能使用的索引<br>2、计算全表扫描的代价<br>3、计算使用不同索引执行查询的代价<br>4、对比各种执行方案的代价，找出成本最低的那一个</p>
+<p>感觉是因为我回答的不够好，如果这几个索引问题我都会的话，他还会追问更多，恐怕会被虐的更惨</p>
+<h2 id="总结-amp-感悟"><a href="#总结-amp-感悟" class="headerlink" title="总结&amp;感悟"></a>总结&amp;感悟</h2><p>以上，就是一次面试中关于索引部分知识的问题以及我整理的答案。感觉这次面试过程中关于索引的知识，自己大概能够回答的内容占70%左右，但是自信完全答对的内容只占50%左右，看来自己索引有关的知识了解的还是不够多。</p>
+<p>通过这次面试，发现像阿里这种大厂对于底层知识还是比较看重的，我以前以为关于索引最多也就问一下Hash和B+有什么区别，没想到最后都能问到查询优化器上面。</p>
+<p>最后，不管本次面试能不能通过，都非常感谢有这样一次机会，可以让自己看到自己的不足。通过这次面试，我也收获了很多东西。加油！</p>
+<h1 id="引用资料"><a href="#引用资料" class="headerlink" title="引用资料"></a>引用资料</h1><p>[1] Object_PigMan <a href="https://blog.csdn.net/javawcj123/article/details/79824020" target="_blank" rel="noopener">https://blog.csdn.net/javawcj123/article/details/79824020</a><br>[2] Hollis <a href="https://mp.weixin.qq.com/s/_bk2JVOm2SkXfdcvki6-0w" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/_bk2JVOm2SkXfdcvki6-0w</a></p>
 
         </div>
         <!-- .entry-content -->
@@ -394,36 +395,19 @@ public synchronized boolean containsKey(Object key) {
       <div class="toc" style="background: none;"></div>
       <section class="post-squares nextprev">
         
+        
           
-            <div class="post-nepre half previous">
+            <div class="post-nepre full next">
           
-            <a href="/PersonalBlog/2021/02/15/mianshi/mysql/suoying/" rel="prev">
+            <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/" rel="next">
               <div class="background">
                 <img class="lazyload" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg">
-              </div>
-              <span class="label">
-              Previous Post</span>
-              <div class="info">
-                <h3>
-                【MYSQL】事务篇</h3>
-                <hr>
-              </div>
-            </a>
-          </div>
-        
-        
-          
-            <div class="post-nepre half next">
-          
-            <a href="/PersonalBlog/2020/07/10/mianshi/collection/hashmap/" rel="next">
-              <div class="background">
-                <img class="lazyload" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg">
               </div>
               <span class="label">
               Next Post</span>
               <div class="info">
                 <h3>
-                【集合】HashMap</h3>
+                【MYSQL】事务篇</h3>
                 <hr>
               </div>
             </a>

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">【集合】HashMap | 小诺学习博客</title>
+  <title itemprop="name">【集合】HashTable-ConcurrentHashMap | 小诺学习博客</title>
   
     <link rel="shortcut icon" href="/img/favicon.ico">
   
@@ -296,7 +296,7 @@
     </div>
     <header class="pattern-header single-header">
       <h1 class="entry-title">
-      【集合】HashMap</h1>
+      【集合】HashTable-ConcurrentHashMap</h1>
       <p class="entry-census">
         <span>
           <a href="">
@@ -308,7 +308,7 @@
         </span>
         <span class="bull">
         ·</span>
-        2020-7-10<span class="bull">
+        2021-2-16<span class="bull">
         ·</span>
       <span id="busuanzi_value_page_pv"></span>次阅读</p>
     </header>
@@ -322,57 +322,59 @@
         <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
         
         <div class="entry-content">
-          <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><h3 id="JDK1-7"><a href="#JDK1-7" class="headerlink" title="JDK1.7"></a>JDK1.7</h3><p>底层数据结构是数组+链表<br><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/hashMap/jdk1.7Map.png" alt="hashMap.png"></p>
-<h3 id="JDK-1-8"><a href="#JDK-1-8" class="headerlink" title="JDK.1.8"></a>JDK.1.8</h3><p>底层数据结构是数组+链表+红黑树<br><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/hashMap/jdk1.8Map.png" alt="hashMap.png"></p>
-<h2 id="PUT方法-1"><a href="#PUT方法-1" class="headerlink" title="PUT方法[1]"></a>PUT方法[1]</h2><p><img src="https://img-blog.csdnimg.cn/2019072810592539.png" alt="hashMapPut"></p>
-<h2 id="扩容机制"><a href="#扩容机制" class="headerlink" title="扩容机制"></a>扩容机制</h2><p>默认大小为16,最大的容量是2^30,默认因子0.75</p>
-<pre><code>static final int DEFAULT_INITIAL_CAPACITY = 1 &lt;&lt; 4;
-static final int MAXIMUM_CAPACITY = 1 &lt;&lt; 30;
-static final float DEFAULT_LOAD_FACTOR = 0.75f;
-
-例如：16*0.75=12，默认创建一个map对象数组大小是16，当map添加12个元素到的时候就发生扩容，
-创建新的数组的大小2*16=32，然后重新计算每个元素在新数组中的位置
-
-HashMap的容量为什么是2的n次幂，和这个(n - 1) &amp; hash的计算方法有着千丝万缕的关系，符号&amp;
-是按位与的计算，这是位运算，计算机能直接运算，特别高效，按位与&amp;的计算方法是，只有当对应位
-置的数据都为1时，运算结果也为1，当HashMap的容量是2的n次幂时，(n-1)的2进制也就是1111111***111
-这样形式的，这样与添加元素的hash值进行位运算时，能够充分的散列，使得添加的元素均匀分布在HashMap
-的每个位置上，减少hash碰撞[2]
-</code></pre><p>从代码可以看到扩容就是transfer()方法中用一个容量更大的数组来代替原有的数组</p>
-<pre><code>void resize(int newCapacity) {   //传入新的容量
-    Entry[] oldTable = table;    //引用扩容前的Entry数组
-    int oldCapacity = oldTable.length;         
-    if (oldCapacity == MAXIMUM_CAPACITY) {  //扩容前的数组大小如果已经达到最大(2^30)了
-        threshold = Integer.MAX_VALUE; //修改阈值为int的最大值(2^31-1)，这样以后就不会扩容了
-        return;
+          <h1 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h1><h2 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h2><p>书接上回,说到了<a href="https://lennuo.github.io/PersonalBlog/2020/11/10/mianshi/hashmap/">HashMap</a>是不安全的,说到了HashTable是安全的,直接放源码</p>
+<pre><code>public synchronized V get(Object key) {
+    Entry&lt;?,?&gt; tab[] = table;
+    int hash = key.hashCode();
+    int index = (hash &amp; 0x7FFFFFFF) % tab.length;
+    for (Entry&lt;?,?&gt; e = tab[index] ; e != null ; e = e.next) {
+        if ((e.hash == hash) &amp;&amp; e.key.equals(key)) {
+            return (V)e.value;
+        }
     }
-
-    Entry[] newTable = new Entry[newCapacity];  //初始化一个新的Entry数组
-    transfer(newTable);                         //！！将数据转移到新的Entry数组里
-    table = newTable;                           //HashMap的table属性引用新的Entry数组
-    threshold = (int)(newCapacity * loadFactor);//修改阈值
+    return null;
 }
-</code></pre><pre><code> void transfer(Entry[] newTable) {
-     Entry[] src = table;                   //src引用了旧的Entry数组
-     int newCapacity = newTable.length;
-     for (int j = 0; j &lt; src.length; j++) { //遍历旧的Entry数组
-         Entry&lt;K,V&gt; e = src[j];             //取得旧Entry数组的每个元素
-         if (e != null) {
-             src[j] = null;//释放旧Entry数组的对象引用（for循环后，旧的Entry数组不再引用任何对象）
-             do {
-                 Entry&lt;K,V&gt; next = e.next;
-                 int i = indexFor(e.hash, newCapacity); //！！重新计算每个元素在数组中的位置
-                 e.next = newTable[i]; //标记[1]
-                 newTable[i] = e;      //将元素放在数组上
-                 e = next;             //访问下一个Entry链上的元素
-             } while (e != null);
-         }
-     }
- }
-</code></pre><p>JDK1.7使用的头插法(先进后出–栈),作者一开始的时候以为先进来的数据肯定会先用到,但是头插法有一个问题<br>例(A-&gt;B-&gt;C) 那么插入顺序就是C-B-A 当多个线程同时扩容的时候,那么A先弹出去,接着是B,可能会是A同一个位置,因为头插法那么就会导致B-&gt;A,形成了死链</p>
-<p>JDK1.8使用了尾插法(先进先出–队列)还是同样的例子(A-&gt;B-&gt;C),默认顺序是(A-B-C),就不会出现死链问题.</p>
-<p>当然HashMap本身还是不完全的,他没有锁的保护.<br>线程安全当然还要看<a href="https://lennuo.github.io/PersonalBlog//2020/11/11/mianshi/HashTable-concurrentHashMap/">HashTable和ConcurrentHashMap</a></p>
-<h2 id="引用资料"><a href="#引用资料" class="headerlink" title="引用资料"></a>引用资料</h2><p>[1] never疯   <a href="https://blog.csdn.net/qq_40574571/article/details/97612100" target="_blank" rel="noopener">https://blog.csdn.net/qq_40574571/article/details/97612100</a><br>[2] 猿人小郑  <a href="https://blog.csdn.net/Apeopl/article/details/88935422" target="_blank" rel="noopener">https://blog.csdn.net/Apeopl/article/details/88935422</a></p>
+
+public synchronized boolean containsKey(Object key) {
+    Entry&lt;?,?&gt; tab[] = table;
+    int hash = key.hashCode();
+    int index = (hash &amp; 0x7FFFFFFF) % tab.length;
+    for (Entry&lt;?,?&gt; e = tab[index] ; e != null ; e = e.next) {
+        if ((e.hash == hash) &amp;&amp; e.key.equals(key)) {
+            return true;
+        }
+    }
+    return false;
+}
+</code></pre><p>看全部都是加了锁的,所以就是线程安全的了。</p>
+<h2 id="与HashMap的不同"><a href="#与HashMap的不同" class="headerlink" title="与HashMap的不同"></a>与HashMap的不同</h2><ol>
+<li>HashMap的key可以为null,HashTable是不允许的<br>因为HashTable有个<strong>安全失败机制</strong>这种机制会导致你读的数据都不一定是最新的,因此当key为null的时候,不确定他是真的包含还是真的没有</li>
+<li>初始容量不同<br>HashTable默认是11,HashMap是16</li>
+<li>扩容不同<br>HashMap是2倍,HashTable是2倍+1</li>
+<li>迭代器不同<br>HashMap迭代器是fail-fast(快速失败),HashTable不是,所以HashTable在迭代的时候可以修改增删数据</li>
+</ol>
+<h2 id="快速失败"><a href="#快速失败" class="headerlink" title="快速失败"></a>快速失败</h2><p>快速失败是java里面所有的集合都有的一个,当对一个集合进行迭代遍历的时候,如果进行增删改操作就会抛出异常,其中有一个变量modCount用来记录修改次数,还有一个变量expectedModCount则是表示迭代器对集合进行修改的次数。在进行next()/hasNext()的时候会检查两个值是否一样,不一样则会抛出异常。</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>HashTable的优点是能够保证线程的安全性,同时这也是他的一个缺点,他一锁就会把整个对锁住,导致效率极低,因此出现了concurrentHashMap。</p>
+<hr>
+<h1 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h1><h2 id="JDK1-7"><a href="#JDK1-7" class="headerlink" title="JDK1.7"></a>JDK1.7</h2><h3 id="底层结构"><a href="#底层结构" class="headerlink" title="底层结构"></a>底层结构</h3><p>Segment+HashEntry(数组+链表)<br><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9whwt59o9j30c60dw3z0.jpg" alt="jdk1.7.png"></p>
+<p>ConcurrentHashMap 采用了分段锁技术，其中 Segment 继承于 ReentrantLock, 所以要锁的时候就只会单独锁一个Segment,不会影响其他的Segment。</p>
+<h3 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a>PUT</h3><p>首先尝试获得锁,如果失败就是有其他线程,那么就自旋尝试获得锁,到一定次数就改为阻塞锁获取<br>先通过 key 定位到 HashEntry,遍历该 HashEntry, 如果不为空则遍历 key 和当前 key 比较是否相等, 相等就覆盖掉旧的 value<br>为空的话就会新建一个 HashEntry 并加入到 Segment 中,同时判断是否需要扩容</p>
+<h3 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h3><p>get不需要修改数据,所以比较高效,第一次Hash到Segment,第二次Hash到具体的元素上。</p>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><p>查询的时候，还得遍历链表，会导致效率很低，这个跟jdk1.7的HashMap是存在的一样问题，所以他在jdk1.8完全优化了。</p>
+<h2 id="JDK1-8"><a href="#JDK1-8" class="headerlink" title="JDK1.8"></a>JDK1.8</h2><h3 id="底层结构-1"><a href="#底层结构-1" class="headerlink" title="底层结构"></a>底层结构</h3><p>Node+CAS+Synchronized</p>
+<h3 id="PUT-1"><a href="#PUT-1" class="headerlink" title="PUT"></a>PUT</h3><ol>
+<li>根据 key 计算出 hashcode。</li>
+<li>判断是否需要进行初始化。</li>
+<li>即为当前 key 定位出的 Node，如果为空表示当前位置可以写入数据，利用 <a href="#">CAS</a> 尝试写入，失败则自旋保证成功。</li>
+<li>如果当前位置的 hashcode == MOVED == -1,则需要进行扩容。</li>
+<li>如果都不满足，则利用 synchronized 锁写入数据。</li>
+<li>如果数量大于 TREEIFY_THRESHOLD 则要转换为红黑树。</li>
+</ol>
+<h3 id="GET-1"><a href="#GET-1" class="headerlink" title="GET"></a>GET</h3><ul>
+<li>先根据key的hash定位,如果在桶上直接返回</li>
+<li>如果是红黑树那就按红黑树遍历</li>
+<li>不满足就按链表方式遍历</li>
+</ul>
 
         </div>
         <!-- .entry-content -->
@@ -395,7 +397,7 @@ HashMap的容量为什么是2的n次幂，和这个(n - 1) &amp; hash的计算�
           
             <div class="post-nepre full previous">
           
-            <a href="/PersonalBlog/2020/07/11/mianshi/collection/HashTable-concurrentHashMap/" rel="prev">
+            <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/" rel="prev">
               <div class="background">
                 <img class="lazyload" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg">
               </div>
@@ -403,7 +405,7 @@ HashMap的容量为什么是2的n次幂，和这个(n - 1) &amp; hash的计算�
               Previous Post</span>
               <div class="info">
                 <h3>
-                【集合】HashTable-ConcurrentHashMap</h3>
+                【集合】HashMap</h3>
                 <hr>
               </div>
             </a>
