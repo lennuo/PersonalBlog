@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">【集合】HashTable-ConcurrentHashMap | 小诺学习博客</title>
+  <title itemprop="name">【MYSQL】事务篇 | 小诺学习博客</title>
   
     <link rel="shortcut icon" href="/img/favicon.ico">
   
@@ -292,11 +292,11 @@
 
   <div class="pattern-center single-center">
     <!-- 有配图默认渲染第一张 -->
-    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg);" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg">
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg);" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg">
     </div>
     <header class="pattern-header single-header">
       <h1 class="entry-title">
-      【集合】HashTable-ConcurrentHashMap</h1>
+      【MYSQL】事务篇</h1>
       <p class="entry-census">
         <span>
           <a href="">
@@ -308,7 +308,7 @@
         </span>
         <span class="bull">
         ·</span>
-        2020-11-11<span class="bull">
+        2021-2-15<span class="bull">
         ·</span>
       <span id="busuanzi_value_page_pv"></span>次阅读</p>
     </header>
@@ -322,59 +322,24 @@
         <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
         
         <div class="entry-content">
-          <h1 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h1><h2 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h2><p>书接上回,说到了<a href="https://lennuo.github.io/PersonalBlog/2020/11/10/mianshi/hashmap/">HashMap</a>是不安全的,说到了HashTable是安全的,直接放源码</p>
-<pre><code>public synchronized V get(Object key) {
-    Entry&lt;?,?&gt; tab[] = table;
-    int hash = key.hashCode();
-    int index = (hash &amp; 0x7FFFFFFF) % tab.length;
-    for (Entry&lt;?,?&gt; e = tab[index] ; e != null ; e = e.next) {
-        if ((e.hash == hash) &amp;&amp; e.key.equals(key)) {
-            return (V)e.value;
-        }
-    }
-    return null;
-}
-
-public synchronized boolean containsKey(Object key) {
-    Entry&lt;?,?&gt; tab[] = table;
-    int hash = key.hashCode();
-    int index = (hash &amp; 0x7FFFFFFF) % tab.length;
-    for (Entry&lt;?,?&gt; e = tab[index] ; e != null ; e = e.next) {
-        if ((e.hash == hash) &amp;&amp; e.key.equals(key)) {
-            return true;
-        }
-    }
-    return false;
-}
-</code></pre><p>看全部都是加了锁的,所以就是线程安全的了。</p>
-<h2 id="与HashMap的不同"><a href="#与HashMap的不同" class="headerlink" title="与HashMap的不同"></a>与HashMap的不同</h2><ol>
-<li>HashMap的key可以为null,HashTable是不允许的<br>因为HashTable有个<strong>安全失败机制</strong>这种机制会导致你读的数据都不一定是最新的,因此当key为null的时候,不确定他是真的包含还是真的没有</li>
-<li>初始容量不同<br>HashTable默认是11,HashMap是16</li>
-<li>扩容不同<br>HashMap是2倍,HashTable是2倍+1</li>
-<li>迭代器不同<br>HashMap迭代器是fail-fast(快速失败),HashTable不是,所以HashTable在迭代的时候可以修改增删数据</li>
+          <h1 id="事务四大特性-ACID"><a href="#事务四大特性-ACID" class="headerlink" title="事务四大特性(ACID)"></a>事务四大特性(ACID)</h1><p>首先先来了解下什么叫作事务,一般来说一个事务对应着一个完整的业务,举个最常见的栗子(想念下沙举个栗子的第N天)<br>一个银行转账就是能代表着一个事务：张三 转给李四<strong>1000</strong> 块钱,首先从张三的账户扣 <strong>1000</strong> 块钱,再加给李四的账户加100块钱。</p>
+<h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2><p>一番操作后显示“转账成功”并扣了钱,打给李四询问情况,李四还没有收到张三的钱，而张三多扣了 <strong>1000</strong> 块钱,张三这少钱了不得来银行门口闹嘛!</p>
+<p><strong>这就说到了事务的第一个特性：原子性,保证共同成功或共同失败,不会出现一个成功,一个失败的情况。</strong></p>
+<h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><p>张三 来到了银行门口刚准备闹,经理把他拦了下来说：“这次我们已经把写这个BUG程序员祭天了,钱给您退回来了。”张三又开始了转账操作,给李四又转账了 <strong>1000</strong> 块钱,这次成功转过去了,张三打电话告知李四没想到被李四一顿臭骂:“你小子**是不是玩我,给我转个 <strong>250</strong> 是在骂我！！”。 </p>
+<p><strong>这就是事务的第二个特性：一致性,确保状态一致的。转账服务中转出账户的扣除金额与转入账户的转入金额必须保持一致。</strong></p>
+<h2 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h2><p>张三 又找到了银行经理, 气急败坏地刚准备开始讲优美的中国话, 只见天气突变, 一个没有什么头发的男子朝天飞去,经理说：“写出这个BUG的程序员也被祭天了,这次肯定也没有问题”。张三 又开始了一番操作, 可是银行人已经很多了开始排队了,排到了后又又一番操作。张三转完的同时, 旁边的王五正在给赵六转账 <strong>2000</strong> 元。操作结束后就打电话给了李四询问,没想到李四一直在道歉之前的行为,张三倍感奇怪,这时又飞出来一个秃头怪,张三瞬间明白怎么回事了,经理急忙过来说:“啊啊啊,不好意思,您的转给了 赵六 了,王五 的 2000 到了李四账户了,我们马上改马上改。”</p>
+<p><strong>这就是事务的第三个特性：隔离性,针对并发事务而言，事务必须在不干扰其他进程或事务的前提下独立执行。</strong></p>
+<h2 id="持久性"><a href="#持久性" class="headerlink" title="持久性"></a>持久性</h2><p>又又又一次操作后,张三终于把钱正常的转给了李四,查询了记录这次肯定没有错。</p>
+<p><strong>这就是事务的第四个特性：持久性,对数据所作的所有改动都必须在事务成功结束前保存至某种物理存储设备。这样可以保证，所作的修改在任何系统瘫痪时不至于丢失。<br></strong></p>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="共享锁-s"><a href="#共享锁-s" class="headerlink" title="共享锁(s)"></a>共享锁(s)</h3><p>读锁：事务A对数据对象加S锁的时候，A和其他的事务能加S锁，但都只能读，也不能加X锁</p>
+<h3 id="排他锁-X"><a href="#排他锁-X" class="headerlink" title="排他锁(X)"></a>排他锁(X)</h3><p>读写锁：事务A加了对象X锁后，其他事务不能加任何锁，直到A释放</p>
+<h2 id="事务错误情况"><a href="#事务错误情况" class="headerlink" title="事务错误情况"></a>事务错误情况</h2><ol>
+<li>脏读：事务A读到了事务B未提交的数据。</li>
+<li>不可重复读：事务A第一次查询得到一行记录row1，事务B提交修改后，事务A第二次查询得到row1，但列内容发生了变化。</li>
+<li>幻读：事务A第一次查询得到一行记录row1，事务B提交修改后，事务A第二次查询得到两行记录row1和row2。</li>
 </ol>
-<h2 id="快速失败"><a href="#快速失败" class="headerlink" title="快速失败"></a>快速失败</h2><p>快速失败是java里面所有的集合都有的一个,当对一个集合进行迭代遍历的时候,如果进行增删改操作就会抛出异常,其中有一个变量modCount用来记录修改次数,还有一个变量expectedModCount则是表示迭代器对集合进行修改的次数。在进行next()/hasNext()的时候会检查两个值是否一样,不一样则会抛出异常。</p>
-<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>HashTable的优点是能够保证线程的安全性,同时这也是他的一个缺点,他一锁就会把整个对锁住,导致效率极低,因此出现了concurrentHashMap。</p>
-<hr>
-<h1 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h1><h2 id="JDK1-7"><a href="#JDK1-7" class="headerlink" title="JDK1.7"></a>JDK1.7</h2><h3 id="底层结构"><a href="#底层结构" class="headerlink" title="底层结构"></a>底层结构</h3><p>Segment+HashEntry(数组+链表)<br><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9whwt59o9j30c60dw3z0.jpg" alt="jdk1.7.png"></p>
-<p>ConcurrentHashMap 采用了分段锁技术，其中 Segment 继承于 ReentrantLock, 所以要锁的时候就只会单独锁一个Segment,不会影响其他的Segment。</p>
-<h3 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a>PUT</h3><p>首先尝试获得锁,如果失败就是有其他线程,那么就自旋尝试获得锁,到一定次数就改为阻塞锁获取<br>先通过 key 定位到 HashEntry,遍历该 HashEntry, 如果不为空则遍历 key 和当前 key 比较是否相等, 相等就覆盖掉旧的 value<br>为空的话就会新建一个 HashEntry 并加入到 Segment 中,同时判断是否需要扩容</p>
-<h3 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h3><p>get不需要修改数据,所以比较高效,第一次Hash到Segment,第二次Hash到具体的元素上。</p>
-<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><p>查询的时候，还得遍历链表，会导致效率很低，这个跟jdk1.7的HashMap是存在的一样问题，所以他在jdk1.8完全优化了。</p>
-<h2 id="JDK1-8"><a href="#JDK1-8" class="headerlink" title="JDK1.8"></a>JDK1.8</h2><h3 id="底层结构-1"><a href="#底层结构-1" class="headerlink" title="底层结构"></a>底层结构</h3><p>Node+CAS+Synchronized</p>
-<h3 id="PUT-1"><a href="#PUT-1" class="headerlink" title="PUT"></a>PUT</h3><ol>
-<li>根据 key 计算出 hashcode。</li>
-<li>判断是否需要进行初始化。</li>
-<li>即为当前 key 定位出的 Node，如果为空表示当前位置可以写入数据，利用 <a href="#">CAS</a> 尝试写入，失败则自旋保证成功。</li>
-<li>如果当前位置的 hashcode == MOVED == -1,则需要进行扩容。</li>
-<li>如果都不满足，则利用 synchronized 锁写入数据。</li>
-<li>如果数量大于 TREEIFY_THRESHOLD 则要转换为红黑树。</li>
-</ol>
-<h3 id="GET-1"><a href="#GET-1" class="headerlink" title="GET"></a>GET</h3><ul>
-<li>先根据key的hash定位,如果在桶上直接返回</li>
-<li>如果是红黑树那就按红黑树遍历</li>
-<li>不满足就按链表方式遍历</li>
-</ul>
+<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2><p><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/shiwu.png" alt="shiwu.png"></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>愿世界和平、永无bug<br><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql/fozu.png" alt="fozu.png"></p>
 
         </div>
         <!-- .entry-content -->
@@ -415,7 +380,7 @@ public synchronized boolean containsKey(Object key) {
           
             <div class="post-nepre half next">
           
-            <a href="/PersonalBlog/2020/11/10/mianshi/hashmap/" rel="next">
+            <a href="/PersonalBlog/2020/07/11/mianshi/collection/HashTable-concurrentHashMap/" rel="next">
               <div class="background">
                 <img class="lazyload" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg">
               </div>
@@ -423,7 +388,7 @@ public synchronized boolean containsKey(Object key) {
               Next Post</span>
               <div class="info">
                 <h3>
-                【集合】HashMap</h3>
+                【集合】HashTable-ConcurrentHashMap</h3>
                 <hr>
               </div>
             </a>
