@@ -322,7 +322,55 @@
         <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
         
         <div class="entry-content">
-          
+          <h1 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h1><h2 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h2><p>书接上回,说到了<a href="https://lennuo.github.io/PersonalBlog/2020/11/10/mianshi/hashmap/">HashMap</a>是不安全的,说到了HashTable是安全的,直接放源码</p>
+<pre><code>public synchronized V get(Object key) {
+    Entry&lt;?,?&gt; tab[] = table;
+    int hash = key.hashCode();
+    int index = (hash &amp; 0x7FFFFFFF) % tab.length;
+    for (Entry&lt;?,?&gt; e = tab[index] ; e != null ; e = e.next) {
+        if ((e.hash == hash) &amp;&amp; e.key.equals(key)) {
+            return (V)e.value;
+        }
+    }
+    return null;
+}
+
+public synchronized boolean containsKey(Object key) {
+    Entry&lt;?,?&gt; tab[] = table;
+    int hash = key.hashCode();
+    int index = (hash &amp; 0x7FFFFFFF) % tab.length;
+    for (Entry&lt;?,?&gt; e = tab[index] ; e != null ; e = e.next) {
+        if ((e.hash == hash) &amp;&amp; e.key.equals(key)) {
+            return true;
+        }
+    }
+    return false;
+}
+</code></pre><p>看全部都是加了锁的,所以就是线程安全的了。</p>
+<h2 id="与HashMap的不同"><a href="#与HashMap的不同" class="headerlink" title="与HashMap的不同"></a>与HashMap的不同</h2><ol>
+<li>HashMap的key可以为null,HashTable是不允许的<br>因为HashTable有个<strong>安全失败机制</strong>这种机制会导致你读的数据都不一定是最新的,因此当key为null的时候,不确定他是真的包含还是真的没有</li>
+<li>初始容量不同<br>HashTable默认是11,HashMap是16</li>
+<li>扩容不同<br>HashMap是2倍,HashTable是2倍+1</li>
+<li>迭代器不同<br>HashMap迭代器是fail-fast(快速失败),HashTable不是,所以HashTable在迭代的时候可以修改增删数据</li>
+</ol>
+<h2 id="快速失败"><a href="#快速失败" class="headerlink" title="快速失败"></a>快速失败</h2><p>快速失败是java里面所有的集合都有的一个,当对一个集合进行迭代遍历的时候,如果进行增删改操作就会抛出异常,其中有一个变量modCount用来记录修改次数,还有一个变量expectedModCount则是表示迭代器对集合进行修改的次数。在进行next()/hasNext()的时候会检查两个值是否一样,不一样则会抛出异常。</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>HashTable的优点是能够保证线程的安全性,同时这也是他的一个缺点,他一锁就会把整个对锁住,导致效率极低,因此出现了concurrentHashMap。</p>
+<hr>
+<h1 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h1><h2 id="JDK1-7"><a href="#JDK1-7" class="headerlink" title="JDK1.7"></a>JDK1.7</h2><h3 id="底层结构"><a href="#底层结构" class="headerlink" title="底层结构"></a>底层结构</h3><p>Segment+HashEntry(数组+链表)<br><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9whwt59o9j30c60dw3z0.jpg" alt="jdk1.7.png"></p>
+<p>ConcurrentHashMap 采用了分段锁技术，其中 Segment 继承于 ReentrantLock, 所以要锁的时候就只会单独锁一个Segment,不会影响其他的Segment。</p>
+<h3 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a>PUT</h3><p>首先尝试获得锁,如果失败就是有其他线程,那么就自旋尝试获得锁,到一定次数就改为阻塞锁获取<br>先通过 key 定位到 HashEntry,遍历该 HashEntry, 如果不为空则遍历 key 和当前 key 比较是否相等, 相等就覆盖掉旧的 value<br>为空的话就会新建一个 HashEntry 并加入到 Segment 中,同时判断是否需要扩容</p>
+<h3 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h3><p>get不需要修改数据,所以比较高效,第一次Hash到Segment,第二次Hash到具体的元素上。</p>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><p>查询的时候，还得遍历链表，会导致效率很低，这个跟jdk1.7的HashMap是存在的一样问题，所以他在jdk1.8完全优化了。</p>
+<h2 id="JDK1-8"><a href="#JDK1-8" class="headerlink" title="JDK1.8"></a>JDK1.8</h2><h3 id="底层结构-1"><a href="#底层结构-1" class="headerlink" title="底层结构"></a>底层结构</h3><p>Node+CAS+Synchronized</p>
+<h3 id="PUT-1"><a href="#PUT-1" class="headerlink" title="PUT"></a>PUT</h3><ol>
+<li>根据 key 计算出 hashcode。</li>
+<li>判断是否需要进行初始化。</li>
+<li>即为当前 key 定位出的 Node，如果为空表示当前位置可以写入数据，利用 <a href="#">CAS</a> 尝试写入，失败则自旋保证成功。</li>
+<li>如果当前位置的 hashcode == MOVED == -1,则需要进行扩容。</li>
+<li>如果都不满足，则利用 synchronized 锁写入数据。</li>
+<li>如果数量大于 TREEIFY_THRESHOLD 则要转换为红黑树。</li>
+</ol>
+
         </div>
         <!-- .entry-content -->
        
