@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">Category: 面试 | 小诺学习博客</title>
+  <title itemprop="name">【MAVEN】记一次因为Maven没有及时更新产生的问题 | 小诺学习博客</title>
   
     <link rel="shortcut icon" href="/img/favicon.ico">
   
@@ -286,303 +286,102 @@
   </div>
 </header>
 
-      
+      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
 <div class="pattern-center-blank"></div>
-<div class="pattern-center ">
-  <div class="pattern-attachment-img">
-    <img data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/riji.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+
+  <div class="pattern-center single-center">
+    <!-- 有配图默认渲染第一张 -->
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg);" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg">
+    </div>
+    <header class="pattern-header single-header">
+      <h1 class="entry-title">
+      【MAVEN】记一次因为Maven没有及时更新产生的问题</h1>
+      <p class="entry-census">
+        <span>
+          <a href="">
+            <img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/avatar.jpg">
+          </a>
+        </span>
+        <span>
+          <a href=""></a>
+        </span>
+        <span class="bull">
+        ·</span>
+        2021-2-21<span class="bull">
+        ·</span>
+      <span id="busuanzi_value_page_pv"></span>次阅读</p>
+    </header>
   </div>
-  <header class="pattern-header ">
-    <h1 class="cat-title">面试题笔记</h1>
-    <span class="cat-des">
-      <p>offer!offfer!!offer!!!</p>
-    </span>
-  </header>
-</div>
+
 <div id="content" class="site-content">
   <div id="primary" class="content-area">
     <main id="main" class="site-main" role="main">
+      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
+        <div class="toc"></div>
+        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
+        
+        <div class="entry-content">
+          <h3 id="2021-02-21-02-25-00"><a href="#2021-02-21-02-25-00" class="headerlink" title="2021-02-21 02:25:00"></a>2021-02-21 02:25:00</h3><p>今天把模块全部打包部署，一开始顺顺利利，测了一遍都没有问题，然后因为有一些显示的原因给路径多加了一个前缀，惨案来了，再次请求找不到了，feign请求404了，跑了下本地发现成功的，试了几次更换前缀都是成功的，打包去跑就是404，这个时候就感觉是打包时候缓存的问题，但不知道是哪块出了问题。第一反应是调用方，之前也出现过这个模块缓存不更新，尝试直接请求接口发现可以用的。然后去服务器上检查注册中心，发现也没有问题，那就肯定是打包出问题了。做了对照实验，一次用了第一次打包的路径，请求成功了。第二次随便输入，请求失败了。第三次修改了服务名称，feign用了修改后随便输入，发现他还是报的最早的路径。好了又被缓存坑了，接下来不管是clean也好，直接编译器清缓存都清空不掉，最气的是本地就是好好的，就给你打包后报。最后直接换了2019.3的编译器，以前一直用这个版本，新装了系统才装了2020.3的。不知道是重新加载的原因还是编译器的原因，反正修改了几个小问题就好了，然后发现公共包里面有一个引用问题，讲道理会报错的，之前居然平安无事地运行了半个月都没有提示。现在是2.25了，睡觉睡觉，本来今天还想早睡。</p>
+<h3 id="2021-02-21-11-28-00"><a href="#2021-02-21-11-28-00" class="headerlink" title="2021-02-21 11:28:00"></a>2021-02-21 11:28:00</h3><p>现在仔细想想也有可能是的那个没有修改的小bug的原因,因为报错可能导致依赖他生产者模块没有成功的重新加载,以后还是要多注意maven的坑,以前都没有这么在意过,这次写 微服务 项目的时候发生过好几次因为加载时候没有更新依赖出现的问题。</p>
+
+        </div>
+        <!-- .entry-content -->
+       
+        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+        <footer class="post-footer">
+          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
+          <div class="post-tags">
+          </div>
+          <div class="post-share">
+            <div class="social-share sharehidden share-component"></div>
+            <i class="iconfont show-share icon-forward"></i>
+          </div>
+        </footer><!-- .entry-footer -->
+      </article>
+      <!-- #post-## -->
+      <div class="toc" style="background: none;"></div>
+      <section class="post-squares nextprev">
+        
+        
+          
+            <div class="post-nepre full next">
+          
+            <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/" rel="next">
+              <div class="background">
+                <img class="lazyload" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg">
+              </div>
+              <span class="label">
+              Next Post</span>
+              <div class="info">
+                <h3>
+                【MYSQL】索引基础篇</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+      </section>
       
-  <!-- 首页默认取最最新文章集 -->
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
+      <section class="author-profile">
+        <div class="info" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
+          <a href="" class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/avatar.jpg" itemprop="image" alt="" height="70" width="70"></a>
+          <div class="meta">
+            <span class="title">Author</span>
+            <h3 itemprop="name">
+            <a href="" itemprop="url" rel="author"></a>
+            </h3>
+          </div>
         </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/">
-    【MYSQL】索引基础篇</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-19</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/">
-    【MYSQL】事务篇</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-19</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/">
-    【集合】HashMap</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-16</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/16/mianshi/collection/HashTable-concurrentHashMap/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/16/mianshi/collection/HashTable-concurrentHashMap/">
-    【集合】HashTable-ConcurrentHashMap</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-16</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/16/mianshi/collection/HashTable-concurrentHashMap/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-
-
-      <div class="clearer">
-      </div>
-    </main>
-    <!--  -->
-    
-  </div>
+        <hr>
+        <p><i class="iconfont icon-write"></i></p>
+      </section>
+    </main><!-- #main -->
+  </div><!-- #primary -->
 </div>
 
-<!-- 
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/">
-    【MYSQL】索引基础篇</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-19</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/">
-    【MYSQL】事务篇</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-19</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/">
-    【集合】HashMap</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-16</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/16/mianshi/collection/HashTable-concurrentHashMap/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/16/mianshi/collection/HashTable-concurrentHashMap/">
-    【集合】HashTable-ConcurrentHashMap</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-16</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/16/mianshi/collection/HashTable-concurrentHashMap/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
 
- -->
+
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>
