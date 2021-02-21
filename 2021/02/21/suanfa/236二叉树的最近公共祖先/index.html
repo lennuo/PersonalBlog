@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">小诺学习博客</title>
+  <title itemprop="name">【Leetcode】236 二叉树的最近公共祖先 | 小诺学习博客</title>
   
     <link rel="shortcut icon" href="/img/favicon.ico">
   
@@ -293,428 +293,163 @@
   </div>
 </header>
 
-      <div class="blank" style="padding-top: 0px;"></div>
-<div id="content" class="site-content">
-  
-  <div class="notice" style="margin-top:60px">
-    <i class="iconfont icon-notification">
-    </i>
-    <div class="notice-content">这里是小诺的世界</div>
+      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+<div class="pattern-center-blank"></div>
+
+  <div class="pattern-center single-center">
+    <!-- 有配图默认渲染第一张 -->
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg);" src="/img/background.jpg" data-src="https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg">
+    </div>
+    <header class="pattern-header single-header">
+      <h1 class="entry-title">
+      【Leetcode】236 二叉树的最近公共祖先</h1>
+      <p class="entry-census">
+        <span>
+          <a href="">
+            <img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/avatar.jpg">
+          </a>
+        </span>
+        <span>
+          <a href=""></a>
+        </span>
+        <span class="bull">
+        ·</span>
+        2021-2-21<span class="bull">
+        ·</span>
+      <span id="busuanzi_value_page_pv"></span>次阅读</p>
+    </header>
   </div>
-  
-  <!-- <div class="top-feature-row">
-  <h1 class="fes-title" style="font-family: 'Ubuntu', sans-serif;">
-  <i class="fa fa-anchor" aria-hidden="true">
-  </i>
-  START:DASH!!</h1>
-  
-</div> -->
+
+<div id="content" class="site-content">
   <div id="primary" class="content-area">
     <main id="main" class="site-main" role="main">
-      <h1 class="main-title" style="font-family: 'Ubuntu', sans-serif;">
-      <i class="fa fa-envira" aria-hidden="true"></i>
-      Discovery</h1>
+      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
+        <div class="toc"></div>
+        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
+        
+        <div class="entry-content">
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。</p>
+<p>百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”</p>
+<p><a href="https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank" rel="noopener">链接</a></p>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><pre><code>输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+输出：3
+解释：节点 5 和节点 1 的最近公共祖先是节点 3 。
+</code></pre><h2 id="2"><a href="#2" class="headerlink" title="2"></a>2</h2><pre><code>输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+输出：5
+解释：节点 5 和节点 4 的最近公共祖先是节点 5 。因为根据定义最近公共祖先节点可以为节点本身。
+</code></pre><h2 id="3"><a href="#3" class="headerlink" title="3"></a>3</h2><pre><code>输入：root = [1,0,2]
+输出：[3,3,2]
+</code></pre><h2 id="4"><a href="#4" class="headerlink" title="4"></a>4</h2><pre><code>输入：root = [3,2,4,1]
+输出：[7,9,4,10]
+</code></pre><h1 id="提示："><a href="#提示：" class="headerlink" title="提示："></a>提示：</h1><ul>
+<li>树中节点数目在范围 [2, 10^5] 内。</li>
+<li>-10^9 &lt;= Node.val &lt;= 10^9</li>
+<li>所有 Node.val 互不相同 。</li>
+<li>p != q</li>
+<li>p 和 q 均存在于给定的二叉树中。</li>
+</ul>
+<h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><p>有三种情况：</p>
+<ol>
+<li>左右边都有一个</li>
+<li>全部在左边</li>
+<li>全部在右边<br>那么递归就好了去做三个判断<br>两边都有他就是根了,直接返回他就好了</li>
+</ol>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><pre><code>/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        return find(root, p, q);
+    }
+
+    static TreeNode find(TreeNode node,TreeNode p,TreeNode q) {
+        if(node==null) {
+            return null;
+        }
+        if(node.val==p.val || node.val==q.val) {
+            return node;
+        }
+        else {
+            TreeNode left = find(node.left, p, q);
+            TreeNode right = find(node.right, p, q);
+            if(left!=null &amp;&amp; right!=null) {
+                return node;
+            }
+            else if(left==null) {
+                return right;
+            }
+            else {
+                return left;
+            }
+        }
+
+    }
+}
+
+</code></pre>
+        </div>
+        <!-- .entry-content -->
+       
+        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+        <footer class="post-footer">
+          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
+          <div class="post-tags">
+          </div>
+          <div class="post-share">
+            <div class="social-share sharehidden share-component"></div>
+            <i class="iconfont show-share icon-forward"></i>
+          </div>
+        </footer><!-- .entry-footer -->
+      </article>
+      <!-- #post-## -->
+      <div class="toc" style="background: none;"></div>
+      <section class="post-squares nextprev">
+        
+        
+          
+            <div class="post-nepre full next">
+          
+            <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/" rel="next">
+              <div class="background">
+                <img class="lazyload" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg">
+              </div>
+              <span class="label">
+              Next Post</span>
+              <div class="info">
+                <h3>
+                【MAVEN】记一次因为Maven没有及时更新产生的问题</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+      </section>
       
-  <!-- 首页默认取最最新文章集 -->
-  
-    
-<article  class="post post-list-thumb post-list-thumb-left"  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/21/suanfa/236二叉树的最近公共祖先/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-21 15:02</div>
-      <a href="/PersonalBlog/2021/02/21/suanfa/236二叉树的最近公共祖先/" class="post-title">
-        <h3>【Leetcode】236 二叉树的最近公共祖先</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/算法/">算法</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/21/suanfa/236二叉树的最近公共祖先/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
+      <section class="author-profile">
+        <div class="info" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
+          <a href="" class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/avatar.jpg" itemprop="image" alt="" height="70" width="70"></a>
+          <div class="meta">
+            <span class="title">Author</span>
+            <h3 itemprop="name">
+            <a href="" itemprop="url" rel="author"></a>
+            </h3>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-21 11:02</div>
-      <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/" class="post-title">
-        <h3>【MAVEN】记一次因为Maven没有及时更新产生的问题</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/开发/">开发</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb post-list-thumb-left"  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-19 19:02</div>
-      <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/" class="post-title">
-        <h3>【MYSQL】索引基础篇</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/面试/">面试</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/19/mianshi/mysql/suoying/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mysql.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-19 08:02</div>
-      <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/" class="post-title">
-        <h3>【MYSQL】事务篇</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/面试/">面试</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/19/mianshi/mysql/shiwu/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb post-list-thumb-left"  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/17/yule/jisuanji/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="http://i1.hdslb.com/bfs/archive/09fad0504d3be186bc9f9d68db031d5760f2e7a1.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-17 21:02</div>
-      <a href="/PersonalBlog/2021/02/17/yule/jisuanji/" class="post-title">
-        <h3>【生僻字】（计算机版）计算机系人骄傲地把头抬起</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/娱乐/">娱乐</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/17/yule/jisuanji/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/17/yule/paidaxin/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/paidaxing.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-17 21:02</div>
-      <a href="/PersonalBlog/2021/02/17/yule/paidaxin/" class="post-title">
-        <h3>【派大星的独白】一个关于正常人的故事</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/娱乐/">娱乐</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/17/yule/paidaxin/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb post-list-thumb-left"  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-16 20:02</div>
-      <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/" class="post-title">
-        <h3>【集合】HashMap</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/面试/">面试</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/16/mianshi/collection/hashmap/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/16/mianshi/collection/HashTable-concurrentHashMap/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/mianshi.jpg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-16 19:02</div>
-      <a href="/PersonalBlog/2021/02/16/mianshi/collection/HashTable-concurrentHashMap/" class="post-title">
-        <h3>【集合】HashTable-ConcurrentHashMap</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/面试/">面试</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/16/mianshi/collection/HashTable-concurrentHashMap/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb post-list-thumb-left"  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/10/suanfa/538把二叉搜索树转换为累加树/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-10 22:02</div>
-      <a href="/PersonalBlog/2021/02/10/suanfa/538把二叉搜索树转换为累加树/" class="post-title">
-        <h3>【Leetcode】538 把二叉搜索树转换为累加树</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/算法/">算法</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/10/suanfa/538把二叉搜索树转换为累加树/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-    
-<article  class="post post-list-thumb" itemscope="" itemtype="https://schema.org/BlogPosting">
-
-  <div class="post-thumb">
-    <a href="/PersonalBlog/2021/02/01/suanfa/zoj-Welcome Party/">
-      <img class="lazyload" onerror="imgError(this,3)" src="/img/background.jpg" data-src="https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg">
-    </a>
-  </div>
-  <div class="post-content-wrap">
-    <div class="post-content">
-      <div class="post-date">
-        <i class="iconfont icon-time">
-        </i>2021-2-1 10:02</div>
-      <a href="/PersonalBlog/2021/02/01/suanfa/zoj-Welcome Party/" class="post-title">
-        <h3>【16th浙江省ACM比赛】Welcome Party</h3>
-      </a>
-      <div class="post-meta">
-        <span><i class="fa fa-tags"></i>
-        
-        </span>
-        <span>
-          <i class="iconfont icon-file"></i>
-          
-            <a href="/PersonalBlog/categories/算法/">算法</a>
-          
-        </span>
-      </div>
-      <div class="float-content">
-        <p></p>
-        <div class="post-bottom">
-          <a href="/PersonalBlog/2021/02/01/suanfa/zoj-Welcome Party/" class="button-normal">
-            <i class="iconfont icon-caidan"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-  
-
-
-    </main>
-      <!-- 首页默认取最最新文章集 -->
-    <!--  -->
-  </div>
-  
+        <hr>
+        <p><i class="iconfont icon-write"></i></p>
+      </section>
+    </main><!-- #main -->
+  </div><!-- #primary -->
 </div>
+
+
 
     </div>    
     <div class="ins-search">

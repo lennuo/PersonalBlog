@@ -6,7 +6,7 @@
   <link href="/PersonalBlog/atom.xml" rel="self"/>
   
   <link href="https://lennuo.github.io/PersonalBlog/"/>
-  <updated>2021-02-21T03:34:23.325Z</updated>
+  <updated>2021-02-21T07:50:36.589Z</updated>
   <id>https://lennuo.github.io/PersonalBlog/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【Leetcode】236 二叉树的最近公共祖先</title>
+    <link href="https://lennuo.github.io/PersonalBlog/2021/02/21/suanfa/236%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/"/>
+    <id>https://lennuo.github.io/PersonalBlog/2021/02/21/suanfa/236二叉树的最近公共祖先/</id>
+    <published>2021-02-21T07:11:22.000Z</published>
+    <updated>2021-02-21T07:50:36.589Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h1&gt;&lt;p&gt;给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。&lt;/p&gt;
+&lt;p&gt;百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点
+        
+      
+    
+    </summary>
+    
+      <category term="算法" scheme="https://lennuo.github.io/PersonalBlog/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>【MAVEN】记一次因为Maven没有及时更新产生的问题</title>
