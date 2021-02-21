@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">comment | 小诺学习博客</title>
+  <title itemprop="name">【16th浙江省ACM比赛】Welcome Party | 小诺学习博客</title>
   
     <link rel="shortcut icon" href="/img/favicon.ico">
   
@@ -293,80 +293,189 @@
   </div>
 </header>
 
-        <div class="pattern-center-blank"></div>
-  
-    <div class="pattern-center ">
-      <div class="pattern-attachment-img">
-        <img src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/honjun/cdn@1.4/img/banner/comment.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
-      </div>
-      <header class="pattern-header ">
-        <h1 class="entry-title">
-        留言板</h1>
-      </header>
+      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+<div class="pattern-center-blank"></div>
+
+  <div class="pattern-center single-center">
+    <!-- 有配图默认渲染第一张 -->
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg);" src="/img/background.jpg" data-src="https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg">
     </div>
-  
-  <div id="content" class="site-content">
-    <article class="post-item post-301 page type-page status-publish has-post-thumbnail hentry">
-      
-<div class="entry-content">
-  <div class="poem-wrap">
-    <div class="poem-border poem-left">
-    </div>
-    <div class="poem-border poem-right">
-    </div>
-    <h1>
-    念两句诗</h1>
-    <p id="poem">
-    叙别梦、扬州一觉。</p>
-    <p id="info">
-    【宋代】吴文英《夜游宫·人去西楼雁杳》</p>
+    <header class="pattern-header single-header">
+      <h1 class="entry-title">
+      【16th浙江省ACM比赛】Welcome Party</h1>
+      <p class="entry-census">
+        <span>
+          <a href="">
+            <img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/avatar.jpg">
+          </a>
+        </span>
+        <span>
+          <a href=""></a>
+        </span>
+        <span class="bull">
+        ·</span>
+        2021-2-1<span class="bull">
+        ·</span>
+      <span id="busuanzi_value_page_pv"></span>次阅读</p>
+    </header>
   </div>
-</div>
 
-      <!-- .entry-content -->
-      
-<div id="vcomments"></div>
-<script>
-  window.onload = function(){
-      var valine = new Valine();
-      valine.init({
-        el: '#vcomments',
-        appId: "8NURobBY0mLl41rnpXSCbrCW-gzGzoHsz",
-        appKey: "8Sipedqx9Yeg60ljTAEvtOFA",
-        path: window.location.pathname,
-        placeholder: "你是我一生只会遇见一次的惊喜 ..."
-      })
-  }
-</script>
+<div id="content" class="site-content">
+  <div id="primary" class="content-area">
+    <main id="main" class="site-main" role="main">
+      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
+        <div class="toc"></div>
+        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
+        
+        <div class="entry-content">
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p><a href="https://zoj.pintia.cn/problem-sets/91827364500/problems/91827370504" target="_blank" rel="noopener">题目太长了直接放链接</a></p>
+<h1 id="大概题意"><a href="#大概题意" class="headerlink" title="大概题意"></a>大概题意</h1><p>a-b是朋友，b-c是朋友,但a-c不一定是朋友,现在有一个房间让全部的人进入房间,如果房间没有朋友那就不开心,现在让你求出最小的不开心数量以及输出出来进房间的序列</p>
+<p>看到这题第一反应就是并查集了,把所有的点全部连起来,然后再找到对应的根,这样子是能够确定最小不开心,但是输出还是一个问题,这个时候就用拓扑排序的方法去跑,把所有的根加到优先队列里面,然后输出他的子项,一直去加入到优先队列,这样子就能保证最小顺序。</p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><pre><code>#include&lt;bits/stdc++.h&gt;
+using namespace std;
+int root[1000055];
+int find(int x){//找根 
+    while(root[x]!=x){
+        x = root[x];
+    } 
 
-      
-      <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
-      <footer class="post-footer">
-        <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
-        <div class="post-tags">
+    return x;
+} 
+void union1(int x,int y){
+    int fx = find(x);
+    int fy = find(y);
+    if(fx&lt;fy){
+        root[fy]=fx;
+    }
+    else{
+        root[fx]=fy;
+    }
+} 
+int vis[1000005];
+int ansCount = 0;
+int ans[1000005];
+vector&lt;int&gt; vv[1000005]; 
+void bfs(int st){
+    priority_queue&lt;int,vector&lt;int&gt;,greater&lt;int&gt; &gt; pq;
+    pq.push(st);
+    while(!pq.empty()){
+        int cu = pq.top();
+        pq.pop();
+        if(vis[cu]==1) continue;//代表已经访问过了
+        vis[cu]=1;
+        ans[ansCount++] = cu;//添加进去
+        for(int i=0;i&lt;vv[cu].size();i++){
+            int v = vv[cu][i];
+            if(vis[v]!=1){
+                pq.push(v); 
+            }
+        } 
+
+    } 
+} 
+int main(){
+    int T;
+    scanf(&quot;%d&quot;,&amp;T);
+    while(T--){
+        ansCount = 0;
+
+        int n,m;
+        scanf(&quot;%d %d&quot;,&amp;n,&amp;m);
+        for(int i=0;i&lt;=n;i++){
+            vv[i].clear();
+            vis[i]=0;
+            root[i]=i;
+        }
+        for(int i=1;i&lt;=m;i++){
+            int a,b;
+            scanf(&quot;%d %d&quot;,&amp;a,&amp;b);
+            vv[a].push_back(b);
+            vv[b].push_back(a);
+            union1(a,b);
+        }
+        int ans1 = 0;
+        for(int i=1;i&lt;=n;i++){//如果是指向着自己那么就是根 
+            if(root[i]==i){
+                ans1++;
+                vv[0].push_back(i);//把根全部加入到数组里面 
+            }
+        }
+        bfs(0);
+        cout&lt;&lt;ans1&lt;&lt;endl;
+        for(int i=1;i&lt;ansCount;i++){
+            printf(&quot;%d&quot;,ans[i]);
+            if(i==ansCount-1){
+                printf(&quot;\n&quot;);
+            }
+            else{
+                printf(&quot; &quot;);
+            }
+        }
+
+
+    }    
+    return 0;
+}
+
+</code></pre>
         </div>
-        <div class="post-share">
-          <div class="social-share sharehidden share-component"></div>
-          <i class="iconfont show-share icon-forward"></i>
-        </div>
-      </footer><!-- .entry-footer -->
-    </article>
+        <!-- .entry-content -->
+       
+        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+        <footer class="post-footer">
+          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
+          <div class="post-tags">
+          </div>
+          <div class="post-share">
+            <div class="social-share sharehidden share-component"></div>
+            <i class="iconfont show-share icon-forward"></i>
+          </div>
+        </footer><!-- .entry-footer -->
+      </article>
       <!-- #post-## -->
+      <div class="toc" style="background: none;"></div>
+      <section class="post-squares nextprev">
+        
+          
+            <div class="post-nepre full previous">
+          
+            <a href="/PersonalBlog/2021/02/10/suanfa/538把二叉搜索树转换为累加树/" rel="prev">
+              <div class="background">
+                <img class="lazyload" src="/img/background.jpg" data-src="https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg">
+              </div>
+              <span class="label">
+              Previous Post</span>
+              <div class="info">
+                <h3>
+                【Leetcode】538 把二叉搜索树转换为累加树</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+        
+      </section>
+      
       <section class="author-profile">
         <div class="info" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
-          <a href="/PersonalBlog/about/" class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/avatar.jpg" itemprop="image" alt="冲鸭！" height="70" width="70"></a>
+          <a href="" class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/avatar.jpg" itemprop="image" alt="" height="70" width="70"></a>
           <div class="meta">
             <span class="title">Author</span>
             <h3 itemprop="name">
-            <a href="" itemprop="url" rel="author">冲鸭！</a>
+            <a href="" itemprop="url" rel="author"></a>
             </h3>
           </div>
         </div>
         <hr>
-        <p><i class="iconfont icon-write"></i>做自己想做的事,成为自己梦想中的人</p>
+        <p><i class="iconfont icon-write"></i></p>
       </section>
+    </main><!-- #main -->
   </div><!-- #primary -->
 </div>
+
+
+
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>
