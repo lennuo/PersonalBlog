@@ -6,7 +6,7 @@
   <link href="/PersonalBlog/atom.xml" rel="self"/>
   
   <link href="https://lennuo.github.io/PersonalBlog/"/>
-  <updated>2021-02-21T07:50:36.589Z</updated>
+  <updated>2021-02-22T06:08:30.514Z</updated>
   <id>https://lennuo.github.io/PersonalBlog/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【Leetcode】236 二叉树的最近公共祖先</title>
+    <link href="https://lennuo.github.io/PersonalBlog/2021/02/22/suanfa/%E6%B1%82%E5%92%8C%E8%B7%AF%E5%BE%84/"/>
+    <id>https://lennuo.github.io/PersonalBlog/2021/02/22/suanfa/求和路径/</id>
+    <published>2021-02-22T06:11:22.000Z</published>
+    <updated>2021-02-22T06:08:30.514Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="算法" scheme="https://lennuo.github.io/PersonalBlog/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>【Leetcode】236 二叉树的最近公共祖先</title>
@@ -115,32 +139,6 @@
   </entry>
   
   <entry>
-    <title>【生僻字】（计算机版）计算机系人骄傲地把头抬起</title>
-    <link href="https://lennuo.github.io/PersonalBlog/2021/02/17/yule/jisuanji/"/>
-    <id>https://lennuo.github.io/PersonalBlog/2021/02/17/yule/jisuanji/</id>
-    <published>2021-02-17T13:47:59.000Z</published>
-    <updated>2021-02-19T01:43:57.662Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;p&gt;来自bilibili视频引用&lt;/p&gt;
-&lt;p&gt;Up主：派三叔iPython3&lt;/p&gt;
-&lt;iframe
-        
-      
-    
-    </summary>
-    
-      <category term="娱乐" scheme="https://lennuo.github.io/PersonalBlog/categories/%E5%A8%B1%E4%B9%90/"/>
-    
-    
-  </entry>
-  
-  <entry>
     <title>【派大星的独白】一个关于正常人的故事</title>
     <link href="https://lennuo.github.io/PersonalBlog/2021/02/17/yule/paidaxin/"/>
     <id>https://lennuo.github.io/PersonalBlog/2021/02/17/yule/paidaxin/</id>
@@ -156,6 +154,32 @@
           &lt;p&gt;来自bilibili视频引用&lt;/p&gt;
 &lt;p&gt;Up主：洛温阿特金森&lt;/p&gt;
 &lt;iframe src=&quot;//player.bilibili.com/player.html?aid=60731116&amp;bvid=BV1qt411j7fV&amp;cid=106015992&amp;page=1&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="娱乐" scheme="https://lennuo.github.io/PersonalBlog/categories/%E5%A8%B1%E4%B9%90/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>【生僻字】（计算机版）计算机系人骄傲地把头抬起</title>
+    <link href="https://lennuo.github.io/PersonalBlog/2021/02/17/yule/jisuanji/"/>
+    <id>https://lennuo.github.io/PersonalBlog/2021/02/17/yule/jisuanji/</id>
+    <published>2021-02-17T13:47:59.000Z</published>
+    <updated>2021-02-19T01:43:57.662Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;来自bilibili视频引用&lt;/p&gt;
+&lt;p&gt;Up主：派三叔iPython3&lt;/p&gt;
+&lt;iframe
         
       
     
