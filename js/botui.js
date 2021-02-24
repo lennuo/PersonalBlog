@@ -65,21 +65,16 @@ function bot_ui_ini() {
         secondpart = function () {
             botui.message.add({
                 delay: 1500,
-                content: "毕业于浙江经贸职业技术学院"
-            }).then(function () {
-                botui.message.add({
-                    delay: 1500,
-                    content: "目前专升本后就读于台州学院"
-                }).then(function (){
-                    botui.action.button({
-                        delay: 1100,
-                        action: [{
-                            text: "为什么选择这个学校? 😳",
-                            value: "why-choose"
-                        }]
-                    }).then(function(){
-                        schoolpart()
-                    })
+                content: "目前就读于台州学院"
+            }).then(function (){
+                botui.action.button({
+                    delay: 1100,
+                    action: [{
+                        text: "为什么选择这个学校? 😳",
+                        value: "why-choose"
+                    }]
+                }).then(function(){
+                    schoolpart()
                 })
             })
         
