@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">Category: 开发 | 小诺学习博客</title>
+  <title itemprop="name">【ROCKETMQ】RocketMQ-NameServer | 小诺学习博客</title>
   
     <link rel="shortcut icon" href="/img/favicon.ico">
   
@@ -285,237 +285,153 @@
   </div>
 </header>
 
-      
+      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
 <div class="pattern-center-blank"></div>
-<div class="pattern-center ">
-  <div class="pattern-attachment-img">
-    <img data-src="https://cdn.jsdelivr.net/gh/honjun/cdn@1.6/img/banner/coding.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+
+  <div class="pattern-center single-center">
+    <!-- 有配图默认渲染第一张 -->
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg);" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg">
+    </div>
+    <header class="pattern-header single-header">
+      <h1 class="entry-title">
+      【ROCKETMQ】RocketMQ-NameServer</h1>
+      <p class="entry-census">
+        <span>
+          <a href="">
+            <img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/avatar.jpg">
+          </a>
+        </span>
+        <span>
+          <a href=""></a>
+        </span>
+        <span class="bull">
+        ·</span>
+        2021-2-27<span class="bull">
+        ·</span>
+      <span id="busuanzi_value_page_pv"></span>次阅读</p>
+    </header>
   </div>
-  <header class="pattern-header ">
-    <h1 class="cat-title">秃头之路</h1>
-    <span class="cat-des">
-      <p>Code – Only for Love</p>
-    </span>
-  </header>
-</div>
+
 <div id="content" class="site-content">
   <div id="primary" class="content-area">
     <main id="main" class="site-main" role="main">
+      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
+        <div class="toc"></div>
+        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
+        
+        <div class="entry-content">
+          <h1 id="NameServer启动流程"><a href="#NameServer启动流程" class="headerlink" title="NameServer启动流程"></a>NameServer启动流程</h1><h2 id="配置config属性"><a href="#配置config属性" class="headerlink" title="配置config属性"></a>配置config属性</h2><p>先进入createNamesrvController()方法解析配置文件,填充NamesrvConfig的属性（(NameServer业务参数)）和NettyServerConfig的属性值(NameServer网络参数)</p>
+<h3 id="配置NamesrvConfig属性"><a href="#配置NamesrvConfig属性" class="headerlink" title="配置NamesrvConfig属性"></a>配置NamesrvConfig属性</h3><ol>
+<li>rocketmqHome：rocketMQ主目录,可以通过-Drocketmq.home.dir=path或者通过设置环境变量ROCKETMQ_HOME来配置RocketMQ的主目录</li>
+<li>kvConfigPath:NameServer存储KV配置属性的持久化路径</li>
+<li>configStorePath:nameServer 默认配置文件路径,不生效。nameServer启动时如果要通过配置文件配置NameServer启动属性的话,使用c选项</li>
+<li>orderMessageEnable：是否支持顺序消息,默认不支持。</li>
+</ol>
+<h3 id="NettyServerConfig配置"><a href="#NettyServerConfig配置" class="headerlink" title="NettyServerConfig配置"></a>NettyServerConfig配置</h3><pre><code>listenPort = 8888;     NameServer监听端口,默认初始化是9876
+
+serverWorkerThreads = 8;  Netty业务线程池线程的个数
+
+serverCallbackExecutorThreads = 0;   Netty public任务线程池线程个数,Netty网络设计,根据业务类型的不同创建不同的线程池,比如消息发送、消息消费、心跳检测,如果业务该类型未注册线程池,则由public线程池执行。
+
+serverSelectorThreads = 3; IO线程池的个数,主要是NameServer、Broker端解析请求、返回相应的线程个数。这类线程主要是处理网络请求的解析请求包,如何转到各个业务线程池完成具体的业务操作,再将结果返回调用方
+
+serverOnewaySemaphoreValue = 256; send oneway消息请求并发度（Broker端参数）
+
+serverAsyncSemaphoreValue = 64;   异步消息发送最大并发度（Broker端参数）
+
+serverChannelMaxIdleTimeSeconds = 120; 网络连接最大空闲时间、默认120s,如果连接超过参数设置的值则被关闭
+
+serverSocketSndBufSize = NettySystemConfig.socketSndbufSize;  网络socket发送缓存区大小,默认64k
+
+serverSocketRcvBufSize = NettySystemConfig.socketRcvbufSize;   网络socket接受缓存区大小,默认64k
+
+serverPooledByteBufAllocatorEnable = true;  ByteBuffer是否开启缓存,建议开启
+
+useEpollNativeSelector 是否启动用Epoll IO模型,Linux环境建议开启。
+</code></pre><h2 id="创建NamesrvController实例"><a href="#创建NamesrvController实例" class="headerlink" title="创建NamesrvController实例"></a>创建NamesrvController实例</h2><p>根据启动属性创建NamesrvController实例,并初始化该实例,NameServerController为NameServer核心控制器</p>
+<p>创建NettyServer网络处理对象,开启两个定时任务（心跳检测）<br>定时任务1：NameServer每隔10s扫描一次Broker,移除不激活状态的Broker<br>定时任务2：NameServer每隔10分钟打印一次KV配置</p>
+<h2 id="注册JVM钩子函数"><a href="#注册JVM钩子函数" class="headerlink" title="注册JVM钩子函数"></a>注册JVM钩子函数</h2><p>注册JVM钩子函数并启动服务器,以便监听Broker、消息生产者的网络请求。</p>
+<p><strong>如果代码中使用到了线程池,可以先注册JVM钩子函数,在JVM关闭之前将线程池关闭掉,释放资源。（钩子函数：在JVM关闭的之前调用该函数）</strong></p>
+<h2 id="NameServer路由实现类"><a href="#NameServer路由实现类" class="headerlink" title="NameServer路由实现类"></a>NameServer路由实现类</h2><p>NameServer存储信息:</p>
+<p>topicQueueTable：Topic消息队列路由信息,消息发送时根据路由表进行负载均衡。<br>brokerAddrTable：Broker基础信息,包含brokerName、所属集群名称、主备Broker地址<br>clusterAddrTable：Broker集群信息,存储集群中所有的Broker名称<br>brokerLiveTable： Broker状态信息,NameServer每次收到心跳包会替换该信息<br>filterServerTable：Broker上的FilterServer列表,用于类模式消息过滤</p>
+<p>RocketMQ基于订阅房补机制,一个Topic拥有多个消息队列,一个Broker为每一主题默认创建4个读队列4个写队列。多个Broker组成集群,BrokerName由相同的Broker组成的Master-Slave架构,brokerId为0代表Master,大于0代表Salve。BrokerLiveInfo中lastUpdateTimestamp村粗上一次收到broker心跳包的时间</p>
+<h2 id="路由注册"><a href="#路由注册" class="headerlink" title="路由注册"></a>路由注册</h2><p>RocketMQ的路由注册通过Broker与NameServer的心跳功能来实现的,Broker在启动的时候向所有的NameServer发送心跳语句,每隔30s向集群中所有的NameServer发送心跳包,NameServer收到Broker心跳包会更新brokerLiveTable缓存中BrokerLiveInfo的lastUpdateTimestamp,如何NameServer会每隔10s扫描brokerLiveTable,如果连续120s没有收到心跳包,则移除Broker路由信息,同时关闭socket连接</p>
+
+        </div>
+        <!-- .entry-content -->
+       
+        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+        <footer class="post-footer">
+          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
+          <div class="post-tags">
+          </div>
+          <div class="post-share">
+            <div class="social-share sharehidden share-component"></div>
+            <i class="iconfont show-share icon-forward"></i>
+          </div>
+        </footer><!-- .entry-footer -->
+      </article>
+      <!-- #post-## -->
+      <div class="toc" style="background: none;"></div>
+      <section class="post-squares nextprev">
+        
+          
+            <div class="post-nepre half previous">
+          
+            <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--前言/" rel="prev">
+              <div class="background">
+                <img class="lazyload" src="/img/background.jpg" data-src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg">
+              </div>
+              <span class="label">
+              Previous Post</span>
+              <div class="info">
+                <h3>
+                【ROCKETMQ】RocketMQ-前篇</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+        
+          
+            <div class="post-nepre half next">
+          
+            <a href="/PersonalBlog/2021/02/22/suanfa/求和路径/" rel="next">
+              <div class="background">
+                <img class="lazyload" src="/img/background.jpg" data-src="https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://static.leetcode-cn.com/cn-mono-assets/production/assets/logo-dark-cn.c42314a8.svg">
+              </div>
+              <span class="label">
+              Next Post</span>
+              <div class="info">
+                <h3>
+                【Leetcode】求和路径</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+      </section>
       
-  <!-- 首页默认取最最新文章集 -->
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--前言/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
+      <section class="author-profile">
+        <div class="info" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
+          <a href="" class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/lennuo/CDN/img/avatar.jpg" itemprop="image" alt="" height="70" width="70"></a>
+          <div class="meta">
+            <span class="title">Author</span>
+            <h3 itemprop="name">
+            <a href="" itemprop="url" rel="author"></a>
+            </h3>
+          </div>
         </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--前言/">
-    【ROCKETMQ】RocketMQ-前篇</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-27</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--前言/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--nameServer启动/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--nameServer启动/">
-    【ROCKETMQ】RocketMQ-NameServer</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-27</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--nameServer启动/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/">
-    【MAVEN】记一次因为Maven没有及时更新产生的问题</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-21</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-
-
-      <div class="clearer">
-      </div>
-    </main>
-    <!--  -->
-    
-  </div>
+        <hr>
+        <p><i class="iconfont icon-write"></i></p>
+      </section>
+    </main><!-- #main -->
+  </div><!-- #primary -->
 </div>
 
-<!-- 
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--前言/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--前言/">
-    【ROCKETMQ】RocketMQ-前篇</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-27</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--前言/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--nameServer启动/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--nameServer启动/">
-    【ROCKETMQ】RocketMQ-NameServer</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-27</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/27/jishu/rocketmq--nameServer启动/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope="" itemtype="https://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://cdn.jsdelivr.net/gh/lennuo/CDN/wenzhang/jishu/maven-problem-2021-2-21.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" >
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/">
-    【MAVEN】记一次因为Maven没有及时更新产生的问题</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2021-2-21</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/PersonalBlog/2021/02/21/jishu/mavenproblem-2-21/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
 
- -->
+
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>
